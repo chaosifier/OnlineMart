@@ -37,7 +37,7 @@ export default function RegisterPage() {
     if (resp.status && resp.data) {
       navigate("/login");
     } else {
-      alert(resp.messages[0]);
+      alert(resp.message);
     }
   }
 

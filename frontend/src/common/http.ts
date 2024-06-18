@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosInstance, AxiosError } from "axios";
 import { backendServiceBaseUrl } from "./config";
 import { HttpException } from "./exception";
-import { BaseResponse } from "../types/response";
+import { BaseResponse, ErrorPayloadItem } from "../types/response";
 
 class Http {
     static async apply<D>(
@@ -25,25 +25,25 @@ export class Backend {
         timeout: 3000,
     });
 
-    static async apply<D>(config: AxiosRequestConfig): Promise<BaseResponse<D | null>> {
+    static async apply<D>(config: AxiosRequestConfig): Promise<BaseResponse<D>> {
         try {
-            return await Http.apply<BaseResponse<D | null>>(Backend.axiosInstance, config);
+            return await Http.apply<BaseResponse<D>>(Backend.axiosInstance, config);
         } catch (err) {
             let resp = {
                 status: false,
-                messages: new Array<string>,
-                data: null
+                message: "",
+                data: new Array<ErrorPayloadItem>()
             };
 
             if (err instanceof AxiosError) {
                 if (err.response && err.response.data) {
                     return Promise.resolve(err.response?.data);
                 } else {
-                    resp.messages.push(err.message);
+                    resp.message = err.message;
                     return Promise.resolve(resp);
                 }
             } else {
-                resp.messages.push("Unknown error occurred");
+                resp.message = "Unknown error occurred";
                 return Promise.resolve(resp);
             }
         }

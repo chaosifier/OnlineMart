@@ -6,6 +6,14 @@ import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse, User } 
 
 class UserService implements Service<User, User, number> {
     async login(data: LoginRequest): Promise<BaseResponse<LoginResponse | null>> {
+        return Promise.resolve({
+            "status": false,
+            "message": "Error occurred",
+            "data": [
+                {"key": "email", values: ["err1", "err2"]},
+                {"key": "password", values: ["err1", "err2"]}
+            ]
+        });
         return await Backend.apply<LoginResponse>({
             ...endpoints.backendService.endpoints.user.login,
             data: data

@@ -15,9 +15,13 @@ import {
 import { useNavigate } from 'react-router-dom';
 import classes from './loginPage.module.css';
 import { userService } from '../../service/user.service';
+import { useState } from 'react';
+import { LoginResponse } from '../../types/user';
+import { ErrorPayloadItem } from '../../types/response';
 
 export default function LoginPage() {
   const userSvc = userService;
+  const [errors, setErrors] = useState(Array<ErrorPayloadItem>);
 
   const form = useForm({
     initialValues: {
@@ -35,11 +39,19 @@ export default function LoginPage() {
     let resp = await userSvc.login(values);
 
     if (resp.status && resp.data) {
-      localStorage.setItem('accessToken', resp.data.accessToken);
+      localStorage.setItem('accessToken', (resp.data as LoginResponse).accessToken);
       navigate("/");
     } else {
-      alert(resp.messages[0]);
+      if (resp.data)
+        setErrors(resp.data as Array<ErrorPayloadItem>);
+
+      alert(resp.message);
     }
+  }
+
+  const getErrors = (name: string): Array<string> => {
+    let curEntry = errors.find(e => e.key.toLowerCase() === name.toLowerCase());
+    return curEntry ? curEntry.values : [];
   }
 
   return (
@@ -58,6 +70,7 @@ export default function LoginPage() {
               error={form.errors.email && 'Invalid email'}
               radius="md"
             />
+            {getErrors('email').map((e, i) => <label key={i}>{e}</label>)}
 
             <PasswordInput
               label="Password"
@@ -67,6 +80,7 @@ export default function LoginPage() {
               error={form.errors.password && 'Password should include at least 6 characters'}
               radius="md"
             />
+            {getErrors('password').map((e, i) => <label key={i}>{e}</label>)}
           </Stack>
 
           <Group justify="space-between" mt="xl">
