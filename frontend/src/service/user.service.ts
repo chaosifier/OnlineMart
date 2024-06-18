@@ -1,7 +1,7 @@
 import { Service } from "../common/service";
 import { User } from "../types/user";
 
-export class UserService implements Service<User, User, number> {
+class UserService implements Service<User, User, number> {
     create(data: User): Promise<User> {
         throw new Error("Method not implemented.");
     }
@@ -18,3 +18,5 @@ export class UserService implements Service<User, User, number> {
         throw new Error("Method not implemented.");
     }
 }
+
+export const userService = new UserService();
