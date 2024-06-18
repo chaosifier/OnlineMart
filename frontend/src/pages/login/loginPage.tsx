@@ -14,8 +14,11 @@ import {
 } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 import classes from './loginPage.module.css';
+import { userService } from '../../service/user.service';
 
 export default function LoginPage() {
+  const userSvc = userService;
+
   const form = useForm({
     initialValues: {
       email: '',
@@ -29,8 +32,16 @@ export default function LoginPage() {
   const navigate = useNavigate();
 
   function handleSubmit(values: { email: string; password: string; }): void {
-    console.log(values);
-    navigate("/");
+    userSvc.login(values)
+      .then(r => {
+        // move to service
+        localStorage.setItem('accessToken', r.accessToken);
+        navigate("/");
+      })
+      .catch(e => {
+        alert(e.message);
+        console.log(e);
+      });
   }
 
   return (

@@ -4,6 +4,16 @@ export const endpoints = {
     backendService: {
         url: backendServiceBaseUrl,
         endpoints: {
+            user: {
+                register: {
+                    url: "/register",
+                    method: "POST"
+                },
+                login: {
+                    url: "/login",
+                    method: "POST"
+                }
+            },
             product: {
                 getAll: {
                     url: "/products",

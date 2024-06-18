@@ -11,8 +11,10 @@ import {
 import classes from './registerPage.module.css';
 import { useForm } from '@mantine/form';
 import { useNavigate } from 'react-router-dom';
+import { userService } from '../../service/user.service';
 
 export default function RegisterPage() {
+  const userSvc = userService;
   const navigate = useNavigate();
   const form = useForm({
     initialValues: {
@@ -30,8 +32,14 @@ export default function RegisterPage() {
   });
 
   function handleSubmit(values: { email: string; password: string; firstName: string; lastName: string; }): void {
-    console.log(values);
-    navigate("/login");
+    userSvc.register(values)
+      .then(() => {
+        navigate("/login");
+      })
+      .catch(e => {
+        alert(e.message);
+        console.log(e);
+      });
   }
 
   return (
@@ -77,13 +85,13 @@ export default function RegisterPage() {
             />
           </Stack>
           <Group justify="space-between" mt="xl">
-          <Anchor component="button" type="button" c="dimmed" onClick={() => navigate("/login")} size="xs">
-          Already have an account? Login
-          </Anchor>
-          <Button type="submit" radius="xl">
-            Register
-          </Button>
-        </Group>
+            <Anchor component="button" type="button" c="dimmed" onClick={() => navigate("/login")} size="xs">
+              Already have an account? Login
+            </Anchor>
+            <Button type="submit" radius="xl">
+              Register
+            </Button>
+          </Group>
         </form>
       </Paper>
     </Container>
