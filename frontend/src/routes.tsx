@@ -1,6 +1,6 @@
 import HomePage from "./pages/home";
-import LoginPage from "./pages/login";
-import RegisterPage from "./pages/register";
+import LoginPage from "./pages/login/loginPage";
+import RegisterPage from "./pages/register/registerPage";
 import Layout from "./components/layout/client";
 
 const routes = [

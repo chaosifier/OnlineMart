@@ -3,7 +3,6 @@ import ReactDOM from "react-dom/client";
 import { MantineProvider, createTheme, DEFAULT_THEME } from "@mantine/core";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import routes from "./routes";
-
 import "@mantine/core/styles.css";
 
 // Your theme configuration is merged with default theme
