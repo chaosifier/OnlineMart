@@ -31,17 +31,15 @@ export default function LoginPage() {
   });
   const navigate = useNavigate();
 
-  function handleSubmit(values: { email: string; password: string; }): void {
-    userSvc.login(values)
-      .then(r => {
-        // move to service
-        localStorage.setItem('accessToken', r.accessToken);
-        navigate("/");
-      })
-      .catch(e => {
-        alert(e.message);
-        console.log(e);
-      });
+  async function handleSubmit(values: { email: string; password: string; }): Promise<void> {
+    let resp = await userSvc.login(values);
+
+    if (resp.status && resp.data) {
+      localStorage.setItem('accessToken', resp.data.accessToken);
+      navigate("/");
+    } else {
+      alert(resp.messages[0]);
+    }
   }
 
   return (

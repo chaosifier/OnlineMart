@@ -31,15 +31,14 @@ export default function RegisterPage() {
     },
   });
 
-  function handleSubmit(values: { email: string; password: string; firstName: string; lastName: string; }): void {
-    userSvc.register(values)
-      .then(() => {
-        navigate("/login");
-      })
-      .catch(e => {
-        alert(e.message);
-        console.log(e);
-      });
+  async function handleSubmit(values: { email: string; password: string; firstName: string; lastName: string; }): Promise<void> {
+    let resp = await userSvc.login(values);
+
+    if (resp.status && resp.data) {
+      navigate("/login");
+    } else {
+      alert(resp.messages[0]);
+    }
   }
 
   return (

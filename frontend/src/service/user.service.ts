@@ -1,23 +1,22 @@
 import { endpoints } from "../common/config";
 import { Backend } from "../common/http";
 import { Service } from "../common/service";
+import { BaseResponse } from "../types/response";
 import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse, User } from "../types/user";
 
 class UserService implements Service<User, User, number> {
-    login(data: LoginRequest): Promise<LoginResponse>{
-        let resp = Backend.apply<LoginResponse>({
+    async login(data: LoginRequest): Promise<BaseResponse<LoginResponse | null>> {
+        return await Backend.apply<LoginResponse>({
             ...endpoints.backendService.endpoints.user.login,
             data: data
         });
-        return resp;
     }
 
-    register(data: RegisterRequest): Promise<RegisterResponse>{
-        let resp = Backend.apply<RegisterResponse>({
+    async register(data: RegisterRequest): Promise<BaseResponse<RegisterResponse | null>> {
+        return await Backend.apply<RegisterResponse>({
             ...endpoints.backendService.endpoints.user.register,
             data: data
         });
-        return resp;
     }
 
     create(data: User): Promise<User> {

@@ -1,6 +1,7 @@
-import axios, { AxiosRequestConfig, AxiosResponse, AxiosInstance } from "axios";
+import axios, { AxiosRequestConfig, AxiosResponse, AxiosInstance, AxiosError } from "axios";
 import { backendServiceBaseUrl } from "./config";
 import { HttpException } from "./exception";
+import { BaseResponse } from "../types/response";
 
 class Http {
     static async apply<D>(
@@ -11,25 +12,40 @@ class Http {
         if ([200, 201].includes(response.status)) {
             return response.data;
         }
+        
         throw new HttpException(response);
     }
 }
 
 export class Backend {
-    private constructor() {}
+    private constructor() { }
 
     private static axiosInstance = axios.create({
         baseURL: backendServiceBaseUrl,
         timeout: 3000,
     });
 
-    static async apply<D>(config: AxiosRequestConfig): Promise<D> {
-        // eslint-disable-next-line no-useless-catch
+    static async apply<D>(config: AxiosRequestConfig): Promise<BaseResponse<D | null>> {
         try {
-            return Http.apply<D>(Backend.axiosInstance, config);
+            return await Http.apply<BaseResponse<D | null>>(Backend.axiosInstance, config);
         } catch (err) {
-            // your logic to handle errors
-            throw err;
+            let resp = {
+                status: false,
+                messages: new Array<string>,
+                data: null
+            };
+
+            if (err instanceof AxiosError) {
+                if (err.response && err.response.data) {
+                    return Promise.resolve(err.response?.data);
+                } else {
+                    resp.messages.push(err.message);
+                    return Promise.resolve(resp);
+                }
+            } else {
+                resp.messages.push("Unknown error occurred");
+                return Promise.resolve(resp);
+            }
         }
     }
 }
