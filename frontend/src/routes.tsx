@@ -1,8 +1,7 @@
 import HomePage from "./pages/home";
 import LoginPage from "./pages/login";
 import RegisterPage from "./pages/register";
-import Layout from "./components/layout";
-// import Layout from "./views/layout/layout";
+import Layout from "./components/layout/client";
 
 const routes = [
     {
