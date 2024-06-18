@@ -27,12 +27,8 @@ import {
 // import { MantineLogo } from '@mantinex/mantine-logo';
 import classes from './layout.css';
 import { Outlet } from 'react-router-dom';
-
-const user = {
-  name: 'Jane Spoonfighter',
-  email: 'janspoon@fighter.dev',
-  image: 'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-5.png',
-};
+import { useSelector } from 'react-redux';
+import { selectUserDetail } from '../../reducers/userReducer';
 
 const tabs = [
   'Home',
@@ -49,7 +45,8 @@ export default function Layout() {
   const theme = useMantineTheme();
   const [opened, { toggle }] = useDisclosure(false);
   const [userMenuOpened, setUserMenuOpened] = useState(false);
-
+  const user = useSelector(selectUserDetail);
+  
   const items = tabs.map((tab) => (
     <Tabs.Tab value={tab} key={tab}>
       {tab}
@@ -66,7 +63,7 @@ export default function Layout() {
 
             <Burger opened={opened} onClick={toggle} hiddenFrom="xs" size="sm" />
 
-            <Menu
+            {user && <Menu
               width={260}
               position="bottom-end"
               transitionProps={{ transition: 'pop-top-right' }}
@@ -79,9 +76,9 @@ export default function Layout() {
                   className={cx(classes.user, { [classes.userActive]: userMenuOpened })}
                 >
                   <Group gap={7}>
-                    <Avatar src={user.image} alt={user.name} radius="xl" size={20} />
+                    <Avatar src={user.image} alt={user.fullName} radius="xl" size={20} />
                     <Text fw={500} size="sm" lh={1} mr={3}>
-                      {user.name}
+                      {user.fullName}
                     </Text>
                     <IconChevronDown style={{ width: rem(12), height: rem(12) }} stroke={1.5} />
                   </Group>
@@ -162,7 +159,7 @@ export default function Layout() {
                   Delete account
                 </Menu.Item>
               </Menu.Dropdown>
-            </Menu>
+            </Menu>}
           </Group>
         </Container>
         <Container size="md">

@@ -1,16 +1,19 @@
 
 import { useDispatch, useSelector } from 'react-redux';
-import { login } from '../../reducers/userReducer';
+import { loginUser } from '../../reducers/userReducer';
 import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const handleLogin = () => {
-        // login api call
-        dispatch(login('Tom'));
-        navigate("/")
+    const handleLogin = async () => {
+        try {
+            await dispatch(loginUser({username: "abc", password: "pwd"})).unwrap();
+            navigate("/")
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return <div>
