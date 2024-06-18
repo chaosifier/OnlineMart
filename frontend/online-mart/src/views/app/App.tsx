@@ -5,6 +5,15 @@ import { createTheme, MantineProvider } from '@mantine/core';
 import { Provider } from 'react-redux';
 import { store } from '../../store/store';
 import LoginPage from '../login/loginPage';
+import {
+  createBrowserRouter,
+  Route,
+  Router,
+  RouterProvider,
+  Routes,
+} from "react-router-dom";
+import routes from '../../helpers/routes';
+import Layout from '../layout/layout';
 
 // Your theme configuration is merged with default theme
 const theme = createTheme({
@@ -12,14 +21,20 @@ const theme = createTheme({
   defaultRadius: 'md',
 });
 
+const rootRouter = createBrowserRouter([
+  {
+    path: "/",
+    element: <Layout />,
+    errorElement: <h1>error component goes here</h1>,
+    children: routes
+  }
+])
+
 function App() {
   return (
     <MantineProvider theme={theme}>
       <Provider store={store}>
-        <div className="App">
-          <h1>Welcome to online mart</h1>
-          <LoginPage />
-        </div>
+        <RouterProvider router={rootRouter}/>
       </Provider>
     </MantineProvider>
   );
