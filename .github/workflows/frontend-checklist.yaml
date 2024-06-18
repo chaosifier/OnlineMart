@@ -6,7 +6,7 @@ on:
       - 'frontend/**'
     branches:
       - dev
-      - master
+      - main
 
 jobs:
   run_tests_backend:
