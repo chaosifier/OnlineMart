@@ -14,6 +14,7 @@ import {
 } from "react-router-dom";
 import routes from '../../helpers/routes';
 import Layout from '../layout/layout';
+import '@mantine/core/styles.css';
 
 // Your theme configuration is merged with default theme
 const theme = createTheme({
@@ -22,6 +23,10 @@ const theme = createTheme({
 });
 
 const rootRouter = createBrowserRouter([
+  {
+    path: "/login",
+    element: <LoginPage />
+  },
   {
     path: "/",
     element: <Layout />,
