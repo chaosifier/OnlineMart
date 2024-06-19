@@ -13,8 +13,8 @@ import { UserSessionContext } from "../../../context/UserSession";
 import CategoryMenuComponent from "./categoryMenu/categoryMenu";
 import { useContext } from "react";
 import Search from "../../common/search";
-import LoggedInMenu from "./LoggedInMenu";
-import DefaultMenu from "./DefaultMenu";
+import LoggedInMenu from "./loggedInMenu";
+import DefaultMenu from "./defaultMenu";
 
 const ClientLayout = () => {
     const { isLoggedIn, user } = useContext(UserSessionContext);
@@ -36,7 +36,7 @@ const ClientLayout = () => {
 
     const handleSearch = (v: string) => {
         navigate(`/products?query=${v}`);
-    }
+    };
 
     return (
         <>
@@ -47,7 +47,10 @@ const ClientLayout = () => {
                             <Title onClick={goToHome}>Online Mart</Title>
                         </UnstyledButton>
 
-                        <Search onSearch={handleSearch} />
+                        <Search
+                            placeholder="search products"
+                            onClick={handleSearch}
+                        />
 
                         <Group justify="space-between" gap={rem(30)}>
                             {isLoggedIn && user ? (
