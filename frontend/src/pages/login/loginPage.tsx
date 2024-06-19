@@ -21,7 +21,7 @@ import { ErrorPayloadItem } from '../../types/response';
 
 export default function LoginPage() {
   const userSvc = userService;
-  const [errors, setErrors] = useState(Array<ErrorPayloadItem>);
+  const [errors, setErrors] = useState<{[key :string] : Array<string>}>({});
 
   const form = useForm({
     initialValues: {
@@ -43,15 +43,10 @@ export default function LoginPage() {
       navigate("/");
     } else {
       if (resp.data)
-        setErrors(resp.data as Array<ErrorPayloadItem>);
+        setErrors(resp.data as ErrorPayloadItem);
 
       alert(resp.message);
     }
-  }
-
-  const getErrors = (name: string): Array<string> => {
-    let curEntry = errors.find(e => e.key.toLowerCase() === name.toLowerCase());
-    return curEntry ? curEntry.values : [];
   }
 
   return (
@@ -70,7 +65,7 @@ export default function LoginPage() {
               error={form.errors.email && 'Invalid email'}
               radius="md"
             />
-            {getErrors('email').map((e, i) => <label key={i}>{e}</label>)}
+            {errors['email'] && errors['email'].map((e, i) => <label key={i}>{e}</label>)}
 
             <PasswordInput
               label="Password"
@@ -80,7 +75,7 @@ export default function LoginPage() {
               error={form.errors.password && 'Password should include at least 6 characters'}
               radius="md"
             />
-            {getErrors('password').map((e, i) => <label key={i}>{e}</label>)}
+            {errors['password'] && errors['password'].map((e, i) => <label key={i}>{e}</label>)}
           </Stack>
 
           <Group justify="space-between" mt="xl">

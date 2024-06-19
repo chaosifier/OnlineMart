@@ -9,10 +9,11 @@ class UserService implements Service<User, User, number> {
         return Promise.resolve({
             "status": false,
             "message": "Error occurred",
-            "data": [
-                {"key": "email", values: ["err1", "err2"]},
-                {"key": "password", values: ["err1", "err2"]}
-            ]
+            "data": 
+            {
+                "email" : ["err1", "err2"],
+                "password" : ["err1", "err2"]
+            }
         });
         return await Backend.apply<LoginResponse>({
             ...endpoints.backendService.endpoints.user.login,

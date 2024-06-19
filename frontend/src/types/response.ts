@@ -1,20 +1,24 @@
 export type BaseResponse<T> = {
-    status: boolean,
+    status: boolean;
     // data: T | ErrorPayload<U>,
-    data: T | Array<ErrorPayloadItem>,
-    message: string
-}
+    data: T | ErrorPayloadItem;
+    message: string;
+};
 
 export type PaginatedPayload<T> = {
-    totalRecords: number,
-    records: Array<T>
-}
+    totalRecords: number;
+    records: Array<T>;
+};
 
-// export type ErrorPayload<T> = {
+// export type ErrorPayloadItem<T> = {
 //     [key in keyof T] : Array<string>
 // }
 
 export type ErrorPayloadItem = {
-    key: string,
-    values: Array<string>
-}
+    [key: string]: Array<string>;
+};
+
+// export type ErrorPayloadItem = {
+//     key: string,
+//     values: Array<string>
+// }
