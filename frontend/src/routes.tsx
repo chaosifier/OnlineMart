@@ -5,6 +5,7 @@ import ClientLayout from "./components/layout/client/clientLayout";
 import ProductDetailPage from "./pages/product/detail/productDetailPage";
 import ProductsListingPage from "./pages/product/list/productsListingPage";
 import ProductAddUpdatePage from "./pages/product/addUpdate/productAddUpdatePage";
+import ProductsExplorePage from "./pages/product/explore/productsExplorePage";
 
 const routes = [
     {
@@ -45,6 +46,14 @@ const routes = [
                 element: <ProductAddUpdatePage />,
             },
         ],
+    },
+    {
+        path: "/products/:id",
+        element: <ProductDetailPage />,
+    },
+    {
+        path: "/products",
+        element: <ProductsExplorePage />,
     },
 ];
 

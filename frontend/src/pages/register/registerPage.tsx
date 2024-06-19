@@ -112,6 +112,12 @@ export default function RegisterPage() {
                             error={form.errors.password}
                         />
                     </Stack>
+                    <SegmentedControl
+                        radius="xl"
+                        size="md"
+                        data={["Register as Customer", "Register as Seller"]}
+                        classNames={classes}
+                    />
                     <Group justify="space-between" mt="xl">
                         <Anchor
                             component="button"
@@ -126,13 +132,6 @@ export default function RegisterPage() {
                             Register
                         </Button>
                     </Group>
-
-                    <SegmentedControl
-                        radius="xl"
-                        size="md"
-                        data={["Register as Customer", "Register as Seller"]}
-                        classNames={classes}
-                    />
                 </form>
             </Paper>
         </Container>
