@@ -8,6 +8,7 @@ import { useContext } from "react";
 
 import { UserSessionContext } from "../../../context/UserSession";
 import { useNavigate } from "react-router-dom";
+import CategoryMenuComponent from "./categoryMenu/categoryMenu";
 
 const ClientLayout = () => {
     const { isLoggedIn, user } = useContext(UserSessionContext);
@@ -51,6 +52,7 @@ const ClientLayout = () => {
                         </Group>
                     </Group>
                 </Container>
+                <CategoryMenuComponent/>
             </header>
         </>
     );

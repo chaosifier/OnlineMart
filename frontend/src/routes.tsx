@@ -38,10 +38,32 @@ const routes: RouteObject[] = [
                 index: true,
                 element: <HomePage />,
             },
+            {
+                path: "/products/:id",
+                element: <ProductDetailPage />,
+            },
+            {
+                path: "/products",
+                element: <ProductsExplorePage />,
+            },
+            {
+                path: "/cart",
+                element: <CartPage />,
+            },
+            {
+                path: "/checkout",
+                element: <CheckoutPage />,
+            },
         ],
     },
     {
         path: "/seller",
+        element: (
+            <>
+                <ClientLayout />
+                <Outlet />
+            </>
+        ),
         children: [
             {
                 path: "/seller/products",
@@ -68,23 +90,7 @@ const routes: RouteObject[] = [
                 element: <OrderDetailPage />,
             },
         ],
-    },
-    {
-        path: "/products/:id",
-        element: <ProductDetailPage />,
-    },
-    {
-        path: "/products",
-        element: <ProductsExplorePage />,
-    },
-    {
-        path: "/cart",
-        element: <CartPage />,
-    },
-    {
-        path: "/checkout",
-        element: <CheckoutPage />,
-    },
+    }
 ];
 
 export default routes;
