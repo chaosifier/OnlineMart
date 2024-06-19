@@ -2,8 +2,9 @@ import HomePage from "./pages/home";
 import LoginPage from "./pages/login/loginPage";
 import RegisterPage from "./pages/register/registerPage";
 import ClientLayout from "./components/layout/client/clientLayout";
+import { Outlet, RouteObject } from "react-router-dom";
 
-const routes = [
+const routes: RouteObject[] = [
     {
         path: "/login",
         element: <LoginPage />,
@@ -14,10 +15,15 @@ const routes = [
     },
     {
         path: "/",
-        element: <ClientLayout />,
-        routes: [
+        element: (
+            <>
+                <ClientLayout />
+                <Outlet />
+            </>
+        ),
+        children: [
             {
-                path: "/",
+                index: true,
                 element: <HomePage />,
             },
         ],
