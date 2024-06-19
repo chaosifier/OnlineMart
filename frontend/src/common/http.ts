@@ -6,7 +6,7 @@ import axios, {
 } from "axios";
 import { backendServiceBaseUrl } from "./config";
 import { HttpException } from "./exception";
-import { BaseResponse, ErrorPayloadItem } from "../types/response";
+import { BaseResponse } from "../types/response";
 
 class Http {
     static async apply<D>(
@@ -42,7 +42,7 @@ export class Backend {
             let resp = {
                 status: false,
                 message: "",
-                data: new Array<ErrorPayloadItem>(),
+                data: {},
             };
 
             if (err instanceof AxiosError) {

@@ -15,7 +15,8 @@ import classes from "./loginPage.module.css";
 import { userService } from "../../service/user.service";
 import { useState } from "react";
 import { LoginResponse } from "../../types/user";
-import { ErrorPayloadItem } from "../../types/response";
+import { ErrorPayload } from "../../types/response";
+import InputErrors from "../../components/common/form/inputErrors";
 
 export default function LoginPage() {
     const userSvc = userService;
@@ -49,7 +50,7 @@ export default function LoginPage() {
             );
             navigate("/");
         } else {
-            if (resp.data) setErrors(resp.data as ErrorPayloadItem);
+            if (resp.data) setErrors(resp.data as ErrorPayload);
 
             alert(resp.message);
         }
@@ -76,10 +77,7 @@ export default function LoginPage() {
                             error={form.errors.email && "Invalid email"}
                             radius="md"
                         />
-                        {errors["email"] &&
-                            errors["email"].map((e, i) => (
-                                <label key={i}>{e}</label>
-                            ))}
+                        <InputErrors messages={errors["email"]} />
 
                         <PasswordInput
                             label="Password"
@@ -97,10 +95,7 @@ export default function LoginPage() {
                             }
                             radius="md"
                         />
-                        {errors["password"] &&
-                            errors["password"].map((e, i) => (
-                                <label key={i}>{e}</label>
-                            ))}
+                        <InputErrors messages={errors["password"]} />
                     </Stack>
 
                     <Group justify="space-between" mt="xl">

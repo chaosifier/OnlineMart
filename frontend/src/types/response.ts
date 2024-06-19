@@ -1,7 +1,6 @@
 export type BaseResponse<T> = {
     status: boolean;
-    // data: T | ErrorPayload<U>,
-    data: T | ErrorPayloadItem;
+    data: T | ErrorPayload;
     message: string;
 };
 
@@ -14,7 +13,7 @@ export type PaginatedPayload<T> = {
 //     [key in keyof T] : Array<string>
 // }
 
-export type ErrorPayloadItem = {
+export type ErrorPayload = {
     [key: string]: Array<string>;
 };
 
