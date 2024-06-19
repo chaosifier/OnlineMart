@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { userService } from "../../service/user.service";
 
 export default function RegisterPage() {
+    const userSvc = userService;
     const navigate = useNavigate();
     const form = useForm({
         initialValues: {
@@ -39,7 +40,7 @@ export default function RegisterPage() {
         firstName: string;
         lastName: string;
     }): Promise<void> {
-        const resp = await userService.login(values);
+        let resp = await userSvc.login(values);
 
         if (resp.status && resp.data) {
             navigate("/login");

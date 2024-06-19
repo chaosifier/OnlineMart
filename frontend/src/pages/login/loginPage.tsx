@@ -15,11 +15,14 @@ import classes from "./loginPage.module.css";
 import { userService } from "../../service/user.service";
 import { useState } from "react";
 import { LoginResponse } from "../../types/user";
-import { ErrorPayloadItem } from "../../types/response";
+import { ErrorPayload } from "../../types/response";
+import InputErrors from "../../components/common/form/inputErrors";
 
 export default function LoginPage() {
-    const [errors, setErrors] = useState(Array<ErrorPayloadItem>);
+    const userSvc = userService;
+    const [errors, setErrors] = useState<{ [key: string]: Array<string> }>({});
 
+    const navigate = useNavigate();
     const form = useForm({
         initialValues: {
             email: "",
@@ -33,13 +36,12 @@ export default function LoginPage() {
                     : null,
         },
     });
-    const navigate = useNavigate();
 
     async function handleSubmit(values: {
         email: string;
         password: string;
     }): Promise<void> {
-        const resp = await userService.login(values);
+        let resp = await userSvc.login(values);
 
         if (resp.status && resp.data) {
             localStorage.setItem(
@@ -48,18 +50,11 @@ export default function LoginPage() {
             );
             navigate("/");
         } else {
-            if (resp.data) setErrors(resp.data as Array<ErrorPayloadItem>);
+            if (resp.data) setErrors(resp.data as ErrorPayload);
 
             alert(resp.message);
         }
     }
-
-    const getErrors = (name: string): Array<string> => {
-        const curEntry = errors.find(
-            (e) => e.key.toLowerCase() === name.toLowerCase()
-        );
-        return curEntry ? curEntry.values : [];
-    };
 
     return (
         <Container size={460} my={30}>
@@ -82,9 +77,7 @@ export default function LoginPage() {
                             error={form.errors.email && "Invalid email"}
                             radius="md"
                         />
-                        {getErrors("email").map((e, i) => (
-                            <label key={i}>{e}</label>
-                        ))}
+                        <InputErrors messages={errors["email"]} />
 
                         <PasswordInput
                             label="Password"
@@ -102,9 +95,7 @@ export default function LoginPage() {
                             }
                             radius="md"
                         />
-                        {getErrors("password").map((e, i) => (
-                            <label key={i}>{e}</label>
-                        ))}
+                        <InputErrors messages={errors["password"]} />
                     </Stack>
 
                     <Group justify="space-between" mt="xl">
