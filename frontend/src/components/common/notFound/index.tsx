@@ -10,7 +10,7 @@ import image from "./404.svg";
 import classes from "./notFound.module.css";
 import { useNavigate } from "react-router-dom";
 
-export function NotFoundComponent() {
+export default function NotFoundComponent() {
     const navigate = useNavigate();
     const goToHomePage = () => {
         navigate("/");
