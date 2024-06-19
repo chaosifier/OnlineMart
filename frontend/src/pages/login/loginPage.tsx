@@ -1,98 +1,128 @@
-import { useForm } from '@mantine/form';
+import { useForm } from "@mantine/form";
 import {
-  TextInput,
-  PasswordInput,
-  Text,
-  Paper,
-  Group,
-  PaperProps,
-  Button,
-  Anchor,
-  Stack,
-  Container,
-  Title,
-} from '@mantine/core';
-import { useNavigate } from 'react-router-dom';
-import classes from './loginPage.module.css';
-import { userService } from '../../service/user.service';
-import { useState } from 'react';
-import { LoginResponse } from '../../types/user';
-import { ErrorPayloadItem } from '../../types/response';
+    TextInput,
+    PasswordInput,
+    Paper,
+    Group,
+    Button,
+    Anchor,
+    Stack,
+    Container,
+    Title,
+} from "@mantine/core";
+import { useNavigate } from "react-router-dom";
+import classes from "./loginPage.module.css";
+import { userService } from "../../service/user.service";
+import { useState } from "react";
+import { LoginResponse } from "../../types/user";
+import { ErrorPayloadItem } from "../../types/response";
 
 export default function LoginPage() {
-  const userSvc = userService;
-  const [errors, setErrors] = useState(Array<ErrorPayloadItem>);
+    const [errors, setErrors] = useState(Array<ErrorPayloadItem>);
 
-  const form = useForm({
-    initialValues: {
-      email: '',
-      password: ''
-    },
-    validate: {
-      email: (val) => (/^\S+@\S+$/.test(val) ? null : 'Invalid email'),
-      password: (val) => (val.length <= 6 ? 'Password should include at least 6 characters' : null),
-    },
-  });
-  const navigate = useNavigate();
+    const form = useForm({
+        initialValues: {
+            email: "",
+            password: "",
+        },
+        validate: {
+            email: (val) => (/^\S+@\S+$/.test(val) ? null : "Invalid email"),
+            password: (val) =>
+                val.length <= 6
+                    ? "Password should include at least 6 characters"
+                    : null,
+        },
+    });
+    const navigate = useNavigate();
 
-  async function handleSubmit(values: { email: string; password: string; }): Promise<void> {
-    let resp = await userSvc.login(values);
+    async function handleSubmit(values: {
+        email: string;
+        password: string;
+    }): Promise<void> {
+        const resp = await userService.login(values);
 
-    if (resp.status && resp.data) {
-      localStorage.setItem('accessToken', (resp.data as LoginResponse).accessToken);
-      navigate("/");
-    } else {
-      if (resp.data)
-        setErrors(resp.data as Array<ErrorPayloadItem>);
+        if (resp.status && resp.data) {
+            localStorage.setItem(
+                "accessToken",
+                (resp.data as LoginResponse).accessToken
+            );
+            navigate("/");
+        } else {
+            if (resp.data) setErrors(resp.data as Array<ErrorPayloadItem>);
 
-      alert(resp.message);
+            alert(resp.message);
+        }
     }
-  }
 
-  const getErrors = (name: string): Array<string> => {
-    let curEntry = errors.find(e => e.key.toLowerCase() === name.toLowerCase());
-    return curEntry ? curEntry.values : [];
-  }
+    const getErrors = (name: string): Array<string> => {
+        const curEntry = errors.find(
+            (e) => e.key.toLowerCase() === name.toLowerCase()
+        );
+        return curEntry ? curEntry.values : [];
+    };
 
-  return (
-    <Container size={460} my={30}>
-      <Title className={classes.title} ta="center">
-        Login to Online Mart!
-      </Title>
-      <Paper withBorder shadow="md" p={30} radius="md" mt="xl">
-        <form onSubmit={form.onSubmit(handleSubmit)}>
-          <Stack>
-            <TextInput
-              label="Email"
-              placeholder="Enter email"
-              value={form.values.email}
-              onChange={(event) => form.setFieldValue('email', event.currentTarget.value)}
-              error={form.errors.email && 'Invalid email'}
-              radius="md"
-            />
-            {getErrors('email').map((e, i) => <label key={i}>{e}</label>)}
+    return (
+        <Container size={460} my={30}>
+            <Title className={classes.title} ta="center">
+                Login to Online Mart!
+            </Title>
+            <Paper withBorder shadow="md" p={30} radius="md" mt="xl">
+                <form onSubmit={form.onSubmit(handleSubmit)}>
+                    <Stack>
+                        <TextInput
+                            label="Email"
+                            placeholder="Enter email"
+                            value={form.values.email}
+                            onChange={(event) =>
+                                form.setFieldValue(
+                                    "email",
+                                    event.currentTarget.value
+                                )
+                            }
+                            error={form.errors.email && "Invalid email"}
+                            radius="md"
+                        />
+                        {getErrors("email").map((e, i) => (
+                            <label key={i}>{e}</label>
+                        ))}
 
-            <PasswordInput
-              label="Password"
-              placeholder="Your password"
-              value={form.values.password}
-              onChange={(event) => form.setFieldValue('password', event.currentTarget.value)}
-              error={form.errors.password && 'Password should include at least 6 characters'}
-              radius="md"
-            />
-            {getErrors('password').map((e, i) => <label key={i}>{e}</label>)}
-          </Stack>
+                        <PasswordInput
+                            label="Password"
+                            placeholder="Your password"
+                            value={form.values.password}
+                            onChange={(event) =>
+                                form.setFieldValue(
+                                    "password",
+                                    event.currentTarget.value
+                                )
+                            }
+                            error={
+                                form.errors.password &&
+                                "Password should include at least 6 characters"
+                            }
+                            radius="md"
+                        />
+                        {getErrors("password").map((e, i) => (
+                            <label key={i}>{e}</label>
+                        ))}
+                    </Stack>
 
-          <Group justify="space-between" mt="xl">
-            <Anchor component="button" type="button" c="dimmed" onClick={() => navigate("/register")} size="xs">
-              Don't have an account? Register
-            </Anchor>
-            <Button type="submit" radius="xl">
-              LOGIN
-            </Button>
-          </Group>
-        </form>
-      </Paper>
-    </Container>
-  );
+                    <Group justify="space-between" mt="xl">
+                        <Anchor
+                            component="button"
+                            type="button"
+                            c="dimmed"
+                            onClick={() => navigate("/register")}
+                            size="xs"
+                        >
+                            Don't have an account? Register
+                        </Anchor>
+                        <Button type="submit" radius="xl">
+                            LOGIN
+                        </Button>
+                    </Group>
+                </form>
+            </Paper>
+        </Container>
+    );
 }
