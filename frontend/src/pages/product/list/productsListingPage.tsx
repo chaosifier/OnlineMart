@@ -9,8 +9,10 @@ import {
     Text,
     rem,
     Container,
+    Flex,
 } from "@mantine/core";
 import classes from "./productsListingPage.module.css";
+import Search from "../../../components/common/search";
 
 const data = [
     {
@@ -90,9 +92,21 @@ export default function ProductsListingPage() {
         );
     });
 
+    const search = (c: string) => {
+        console.log({ c });
+    };
+
     return (
         <Container my="lg">
-            <h1>Product Listing Page</h1>
+            <Flex align={"center"} justify={"space-between"}>
+                <h1>Product Listing Page</h1>
+                <Search
+                    placeholder="search products"
+                    onDebounce={search}
+                    disableRightSection={true}
+                />
+            </Flex>
+
             <ScrollArea>
                 <Table miw={800} verticalSpacing="sm">
                     <Table.Thead>

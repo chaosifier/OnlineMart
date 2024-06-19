@@ -35,7 +35,9 @@ const ClientLayout = () => {
     };
 
     const handleSearch = (v: string) => {
-        navigate(`/products?query=${v}`);
+        if (v.trim()) {
+            navigate(`/products?query=${v}`);
+        }
     };
 
     return (

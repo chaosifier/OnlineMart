@@ -6,25 +6,34 @@ import {
     ActionIcon,
 } from "@mantine/core";
 import { IconSearch, IconArrowRight } from "@tabler/icons-react";
-import { useState } from "react";
+import { useDebouncedValue } from "@mantine/hooks";
+import { useEffect, useState } from "react";
 
 interface SearchComponentProps {
     onChange?: (c: string) => void;
     onClick?: (c: string) => void;
+    onDebounce?: (c: string) => void;
     enableOnEnter?: boolean;
     disableRightSection?: boolean;
     placeholder?: string;
+    useDebounce?: boolean;
 }
 
 const Search: React.FC<SearchComponentProps> = ({
     onChange,
     onClick,
+    onDebounce,
     placeholder,
     enableOnEnter = true,
     disableRightSection = false,
 }) => {
     const theme = useMantineTheme();
     const [searchTerm, setSearchTerm] = useState("");
+    const [debounced] = useDebouncedValue(searchTerm, 200, { leading: true });
+
+    useEffect(() => {
+        onDebounce && onDebounce(debounced);
+    }, [debounced]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(e.target.value);
