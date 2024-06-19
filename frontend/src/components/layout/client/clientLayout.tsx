@@ -6,18 +6,15 @@ import {
     rem,
     Title,
 } from "@mantine/core";
-import Search from "../../common/search";
 import classes from "./clientLayout.module.css";
 import { IconShoppingBag, IconBuildingStore } from "@tabler/icons-react";
 import { Outlet, useNavigate } from "react-router-dom";
-
 import { UserSessionContext } from "../../../context/UserSession";
 import CategoryMenuComponent from "./categoryMenu/categoryMenu";
+import { useContext } from "react";
 import Search from "../../common/search";
-import LoggedInMenu from "./loggedInMenu";
-import DefaultMenu from "./defaultMenu";
-
-import classes from "./clientLayout.module.css";
+import LoggedInMenu from "./LoggedInMenu";
+import DefaultMenu from "./DefaultMenu";
 
 const ClientLayout = () => {
     const { isLoggedIn, user } = useContext(UserSessionContext);
