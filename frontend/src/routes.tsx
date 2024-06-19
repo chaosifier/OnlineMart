@@ -14,6 +14,8 @@ import CheckoutPage from "./pages/checkout/checkoutPage";
 import SellerLayout from "./components/layout/seller/sellerLayout";
 import CartPage from "./pages/cart/cartPage";
 import NotFoundComponent from "./components/common/notFound";
+import UserProfilePage from "./pages/userProfile/userProfile";
+import SellerProfilePage from "./pages/seller/profile/sellerProfilePage";
 
 const routes: RouteObject[] = [
     {
@@ -29,12 +31,36 @@ const routes: RouteObject[] = [
         element: <LoginPage />,
     },
     {
+        path: "/profile",
+        element: <UserProfilePage />,
+    },
+    {
         path: "/",
         element: <ClientLayout />,
         children: [
             {
                 index: true,
                 element: <HomePage />,
+            },
+            {
+                path: "/products/:id",
+                element: <ProductDetailPage />,
+            },
+            {
+                path: "/products",
+                element: <ProductsExplorePage />,
+            },
+            {
+                path: "/cart",
+                element: <CartPage />,
+            },
+            {
+                path: "/checkout",
+                element: <CheckoutPage />,
+            },
+            {
+                path: "/orders/:id",
+                element: <OrderDetailPage />,
             },
         ],
     },
@@ -46,6 +72,10 @@ const routes: RouteObject[] = [
                 index: true,
                 path: "/seller/products",
                 element: <ProductsListingPage />,
+            },
+            {
+                path: "/seller/:id",
+                element: <SellerProfilePage />,
             },
             {
                 path: "/seller/products/:id",
@@ -68,22 +98,6 @@ const routes: RouteObject[] = [
                 element: <OrderDetailPage />,
             },
         ],
-    },
-    {
-        path: "/products/:id",
-        element: <ProductDetailPage />,
-    },
-    {
-        path: "/products",
-        element: <ProductsExplorePage />,
-    },
-    {
-        path: "/cart",
-        element: <CartPage />,
-    },
-    {
-        path: "/checkout",
-        element: <CheckoutPage />,
     },
     {
         path: "*",
