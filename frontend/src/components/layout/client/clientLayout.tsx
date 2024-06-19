@@ -9,13 +9,15 @@ import {
 import Search from "../../common/search";
 import classes from "./clientLayout.module.css";
 import { IconShoppingBag, IconBuildingStore } from "@tabler/icons-react";
-import LoggedInMenu from "./LoggedInMenu";
-import DefaultMenu from "./DefaultMenu";
-import { useContext } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 
 import { UserSessionContext } from "../../../context/UserSession";
-import { useNavigate } from "react-router-dom";
 import CategoryMenuComponent from "./categoryMenu/categoryMenu";
+import Search from "../../common/search";
+import LoggedInMenu from "./loggedInMenu";
+import DefaultMenu from "./defaultMenu";
+
+import classes from "./clientLayout.module.css";
 
 const ClientLayout = () => {
     const { isLoggedIn, user } = useContext(UserSessionContext);
@@ -78,6 +80,7 @@ const ClientLayout = () => {
                 </Container>
                 <CategoryMenuComponent />
             </header>
+            <Outlet />
         </>
     );
 };
