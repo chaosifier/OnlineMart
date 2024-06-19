@@ -1,7 +1,7 @@
 import HomePage from "./pages/home";
 import LoginPage from "./pages/login/loginPage";
 import RegisterPage from "./pages/register/registerPage";
-import Layout from "./components/layout/client";
+import ClientLayout from "./components/layout/client/clientLayout";
 
 const routes = [
     {
@@ -14,7 +14,7 @@ const routes = [
     },
     {
         path: "/",
-        element: <Layout />,
+        element: <ClientLayout />,
         routes: [
             {
                 path: "/",

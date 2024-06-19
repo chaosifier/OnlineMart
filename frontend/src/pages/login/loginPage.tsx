@@ -2,10 +2,8 @@ import { useForm } from "@mantine/form";
 import {
     TextInput,
     PasswordInput,
-    Text,
     Paper,
     Group,
-    PaperProps,
     Button,
     Anchor,
     Stack,
@@ -23,6 +21,7 @@ export default function LoginPage() {
     const userSvc = userService;
     const [errors, setErrors] = useState<{ [key: string]: Array<string> }>({});
 
+    const navigate = useNavigate();
     const form = useForm({
         initialValues: {
             email: "",
@@ -36,7 +35,6 @@ export default function LoginPage() {
                     : null,
         },
     });
-    const navigate = useNavigate();
 
     async function handleSubmit(values: {
         email: string;
