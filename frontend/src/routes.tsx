@@ -7,6 +7,10 @@ import ProductsListingPage from "./pages/product/list/productsListingPage";
 import ProductAddUpdatePage from "./pages/product/addUpdate/productAddUpdatePage";
 import ProductsExplorePage from "./pages/product/explore/productsExplorePage";
 import { Outlet, RouteObject } from "react-router-dom";
+import OrdersListingPage from "./pages/order/list/ordersListingPage";
+import OrderDetailPage from "./pages/order/detail/orderDetailPage";
+import CartPage from "./pages/cart/cartPage";
+import CheckoutPage from "./pages/checkout/checkoutPage";
 
 const routes: RouteObject[] = [
     {
@@ -55,6 +59,14 @@ const routes: RouteObject[] = [
                 path: "/seller/products/:id/update",
                 element: <ProductAddUpdatePage />,
             },
+            {
+                path: "/seller/orders",
+                element: <OrdersListingPage />,
+            },
+            {
+                path: "/seller/orders/:id",
+                element: <OrderDetailPage />,
+            },
         ],
     },
     {
@@ -64,6 +76,14 @@ const routes: RouteObject[] = [
     {
         path: "/products",
         element: <ProductsExplorePage />,
+    },
+    {
+        path: "/cart",
+        element: <CartPage />,
+    },
+    {
+        path: "/checkout",
+        element: <CheckoutPage />,
     },
 ];
 

@@ -1,5 +1,7 @@
+import ProductsExploreComponent from "../product/exploreList/productsExploreComponent";
+
 const HomePage = () => {
-    return <div>home this is home</div>;
+    return <ProductsExploreComponent/>;
 };
 
 export default HomePage;
