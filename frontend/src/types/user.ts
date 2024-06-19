@@ -13,6 +13,7 @@ export type LoginRequest = {
 
 export type LoginResponse = {
     accessToken : string;
+    roles: string[]
 }
 
 export type RegisterRequest = {

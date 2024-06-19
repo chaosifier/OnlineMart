@@ -14,14 +14,6 @@ class UserService implements Service<User, User, number> {
     async login(
         data: LoginRequest
     ): Promise<BaseResponse<LoginResponse | null>> {
-        return Promise.resolve({
-            status: false,
-            message: "Error occurred",
-            data: {
-                email: ["err1", "err2"],
-                password: ["err1", "err2"],
-            },
-        });
         return await Backend.apply<LoginResponse>({
             ...endpoints.backendService.endpoints.user.login,
             data: data,

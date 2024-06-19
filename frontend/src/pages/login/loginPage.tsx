@@ -56,7 +56,11 @@ export default function LoginPage() {
                 "accessToken",
                 (resp.data as LoginResponse).accessToken
             );
-            navigate("/");
+            let navigateTo = "/";
+            if (resp.data.roles.filter((r) => r.toLowerCase() === "seller"))
+                navigateTo += "seller";
+
+            navigate(navigateTo);
         } else {
             if (resp.data) setErrors(resp.data as ErrorPayload);
 
