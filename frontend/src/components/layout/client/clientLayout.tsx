@@ -2,12 +2,12 @@ import { Container, Group, UnstyledButton, Text, rem } from "@mantine/core";
 import Search from "../../common/search";
 import classes from "./clientLayout.module.css";
 import { IconShoppingBag, IconBuildingStore } from "@tabler/icons-react";
-import LoggedInMenu from "./LoggedInMenu";
-import DefaultMenu from "./DefaultMenu";
+import LoggedInMenu from "./loggedInMenu";
+import DefaultMenu from "./defaultMenu";
 import { useContext } from "react";
 
 import { UserSessionContext } from "../../../context/UserSession";
-import { useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 
 const ClientLayout = () => {
     const { isLoggedIn, user } = useContext(UserSessionContext);
@@ -52,6 +52,7 @@ const ClientLayout = () => {
                     </Group>
                 </Container>
             </header>
+            <Outlet />
         </>
     );
 };
