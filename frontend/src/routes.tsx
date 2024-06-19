@@ -14,6 +14,8 @@ import CheckoutPage from "./pages/checkout/checkoutPage";
 import SellerLayout from "./components/layout/seller/sellerLayout";
 import CartPage from "./pages/cart/cartPage";
 import NotFoundComponent from "./components/common/notFound";
+import UserProfilePage from "./pages/userProfile/userProfile";
+import SellerProfilePage from "./pages/seller/profile/sellerProfilePage";
 
 const routes: RouteObject[] = [
     {
@@ -27,6 +29,10 @@ const routes: RouteObject[] = [
     {
         path: "/login/seller",
         element: <LoginPage />,
+    },
+    {
+        path: "/profile",
+        element: <UserProfilePage />,
     },
     {
         path: "/",
@@ -66,6 +72,10 @@ const routes: RouteObject[] = [
                 index: true,
                 path: "/seller/products",
                 element: <ProductsListingPage />,
+            },
+            {
+                path: "/seller/:id",
+                element: <SellerProfilePage />,
             },
             {
                 path: "/seller/products/:id",
