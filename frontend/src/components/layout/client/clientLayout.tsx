@@ -1,4 +1,11 @@
-import { Container, Group, UnstyledButton, Text, rem } from "@mantine/core";
+import {
+    Container,
+    Group,
+    UnstyledButton,
+    Text,
+    rem,
+    Title,
+} from "@mantine/core";
 import Search from "../../common/search";
 import classes from "./clientLayout.module.css";
 import { IconShoppingBag, IconBuildingStore } from "@tabler/icons-react";
@@ -19,12 +26,29 @@ const ClientLayout = () => {
         return navigate("/register?client=seller");
     };
 
+    const goToCart = () => {
+        navigate("/cart");
+    };
+
+    const goToHome = () => {
+        // navigate based on role
+        navigate("/");
+    };
+
+    const handleSearch = (v: string) => {
+        navigate(`/products?query=${v}`);
+    }
+
     return (
         <>
             <header className={classes.header}>
                 <Container className={classes.mainSection} size="md">
                     <Group justify="space-around">
-                        <Search />
+                        <UnstyledButton>
+                            <Title onClick={goToHome}>Online Mart</Title>
+                        </UnstyledButton>
+
+                        <Search onSearch={handleSearch} />
 
                         <Group justify="space-between" gap={rem(30)}>
                             {isLoggedIn && user ? (
@@ -33,7 +57,7 @@ const ClientLayout = () => {
                                 <DefaultMenu />
                             )}
 
-                            <UnstyledButton>
+                            <UnstyledButton onClick={goToCart}>
                                 <Group gap={rem(5)}>
                                     <IconShoppingBag radius="xl" size={35} />
                                     <Text fw={500} size="sm" lh={1} mr={3}>
@@ -52,7 +76,7 @@ const ClientLayout = () => {
                         </Group>
                     </Group>
                 </Container>
-                <CategoryMenuComponent/>
+                <CategoryMenuComponent />
             </header>
         </>
     );

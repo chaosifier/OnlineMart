@@ -21,6 +21,7 @@ import {
     IconPlus,
 } from "@tabler/icons-react";
 import classes from "./exploreSidebarComponent.module.css";
+import { useParams } from "react-router-dom";
 
 const links = [
     { icon: IconBulb, label: "Activity", notifications: 3 },
@@ -40,7 +41,10 @@ const collections = [
     { emoji: "💁‍♀️", label: "Customers" },
 ];
 
-export default function ExploreSidebarComponent() {
+export default function ExploreSidebarComponent() {  
+    const queryParams = new URLSearchParams(window.location.search)
+    const searchTerm = queryParams.get("query")
+    
     const mainLinks = links.map((link) => (
         <UnstyledButton key={link.label} className={classes.mainLink}>
             <div className={classes.mainLinkInner}>
@@ -76,25 +80,26 @@ export default function ExploreSidebarComponent() {
             {collection.label}
         </a>
     ));
-
+console.log(searchTerm, 'searchTerm');
     return (
         <nav className={classes.navbar}>
-            <TextInput
-                placeholder="Search"
-                size="xs"
-                leftSection={
-                    <IconSearch
-                        style={{ width: rem(12), height: rem(12) }}
-                        stroke={1.5}
-                    />
-                }
-                rightSectionWidth={70}
-                rightSection={
-                    <Code className={classes.searchCode}>Ctrl + K</Code>
-                }
-                styles={{ section: { pointerEvents: "none" } }}
-                mb="sm"
-            />
+            {searchTerm && (
+                <TextInput
+                    value={searchTerm}
+                    placeholder="Search"
+                    disabled
+                    size="xs"
+                    leftSection={
+                        <IconSearch
+                            style={{ width: rem(12), height: rem(12) }}
+                            stroke={1.5}
+                        />
+                    }
+                    rightSectionWidth={70}
+                    styles={{ section: { pointerEvents: "none" } }}
+                    mb="sm"
+                />
+            )}
 
             <div className={classes.section}>
                 <Text component="label" htmlFor="test" size="sm" fw={500}>
