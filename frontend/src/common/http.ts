@@ -5,7 +5,6 @@ import axios, {
     AxiosError,
 } from "axios";
 import { backendServiceBaseUrl } from "./config";
-import { HttpException } from "./exception";
 import { BaseResponse } from "../types/response";
 
 class Http {
@@ -14,11 +13,7 @@ class Http {
         config: AxiosRequestConfig
     ): Promise<D> {
         const response: AxiosResponse<D> = await instance.request<D>(config);
-        if ([200, 201].includes(response.status)) {
-            return response.data;
-        }
-
-        throw new HttpException(response);
+        return response.data;
     }
 }
 
@@ -34,12 +29,9 @@ export class Backend {
         config: AxiosRequestConfig
     ): Promise<BaseResponse<D>> {
         try {
-            return await Http.apply<BaseResponse<D>>(
-                Backend.axiosInstance,
-                config
-            );
+            return Http.apply<BaseResponse<D>>(Backend.axiosInstance, config);
         } catch (err) {
-            let resp = {
+            const resp = {
                 status: false,
                 message: "",
                 data: {},

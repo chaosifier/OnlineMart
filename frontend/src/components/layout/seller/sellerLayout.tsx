@@ -17,7 +17,7 @@ const SellerLayout = () => {
         <>
             <header className={classes.header}>
                 <Container className={classes.mainSection} size="md">
-                    <Group justify="center" gap={90}>
+                    <Group justify="flex-end" gap={90}>
                         <Search />
 
                         <Group justify="space-between" gap={rem(30)}>
