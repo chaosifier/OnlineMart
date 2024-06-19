@@ -7,9 +7,16 @@ import DefaultMenu from "./DefaultMenu";
 import { useContext } from "react";
 
 import { UserSessionContext } from "../../../context/UserSession";
+import { useNavigate } from "react-router-dom";
 
 const ClientLayout = () => {
     const { isLoggedIn, user } = useContext(UserSessionContext);
+
+    const navigate = useNavigate();
+
+    const goToRegister = () => {
+        return navigate("/register?client=seller");
+    };
 
     return (
         <>
@@ -33,7 +40,7 @@ const ClientLayout = () => {
                                     </Text>
                                 </Group>
                             </UnstyledButton>
-                            <UnstyledButton>
+                            <UnstyledButton onClick={goToRegister}>
                                 <Group gap={rem(5)}>
                                     <IconBuildingStore radius="xl" size={35} />
                                     <Text fw={500} size="sm" lh={1} mr={3}>

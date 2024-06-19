@@ -10,10 +10,20 @@ import { IconChevronDown, IconLogin2 } from "@tabler/icons-react";
 
 import classes from "./clientLayout.module.css";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const DefaultMenu = () => {
     const theme = useMantineTheme();
     const [userMenuOpened, setUserMenuOpened] = useState(false);
+    const navigate = useNavigate();
+
+    const goToLogin = () => {
+        return navigate("/login");
+    };
+
+    const goToRegister = () => {
+        return navigate("/register?client=customer");
+    };
 
     return (
         <Menu
@@ -55,8 +65,24 @@ const DefaultMenu = () => {
                             stroke={1.5}
                         />
                     }
+                    onClick={goToLogin}
                 >
                     Login
+                </Menu.Item>
+                <Menu.Item
+                    leftSection={
+                        <IconLogin2
+                            style={{
+                                width: rem(16),
+                                height: rem(16),
+                            }}
+                            color={theme.colors.blue[6]}
+                            stroke={1.5}
+                        />
+                    }
+                    onClick={goToRegister}
+                >
+                    Register
                 </Menu.Item>
             </Menu.Dropdown>
         </Menu>

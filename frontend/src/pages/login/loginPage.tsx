@@ -10,7 +10,7 @@ import {
     Container,
     Title,
 } from "@mantine/core";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import classes from "./loginPage.module.css";
 import { userService } from "../../service/user.service";
 import { useState } from "react";
@@ -19,10 +19,18 @@ import { ErrorPayload } from "../../types/response";
 import InputErrors from "../../components/common/form/inputErrors";
 
 export default function LoginPage() {
-    const userSvc = userService;
     const [errors, setErrors] = useState<{ [key: string]: Array<string> }>({});
+    const { pathname } = useLocation();
 
     const navigate = useNavigate();
+
+    const goToRegister = () => {
+        if (pathname.includes("/login/seller")) {
+            return navigate("/register?client=seller");
+        }
+        navigate("/register?client=customer");
+    };
+
     const form = useForm({
         initialValues: {
             email: "",
@@ -41,7 +49,7 @@ export default function LoginPage() {
         email: string;
         password: string;
     }): Promise<void> {
-        let resp = await userSvc.login(values);
+        const resp = await userService.login(values);
 
         if (resp.status && resp.data) {
             localStorage.setItem(
@@ -103,7 +111,7 @@ export default function LoginPage() {
                             component="button"
                             type="button"
                             c="dimmed"
-                            onClick={() => navigate("/register")}
+                            onClick={goToRegister}
                             size="xs"
                         >
                             Don't have an account? Register

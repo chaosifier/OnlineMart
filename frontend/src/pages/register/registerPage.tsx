@@ -11,12 +11,12 @@ import {
 } from "@mantine/core";
 import classes from "./registerPage.module.css";
 import { useForm } from "@mantine/form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { userService } from "../../service/user.service";
 
 export default function RegisterPage() {
-    const userSvc = userService;
     const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
     const form = useForm({
         initialValues: {
             email: "",
@@ -41,14 +41,21 @@ export default function RegisterPage() {
         firstName: string;
         lastName: string;
     }): Promise<void> {
-        let resp = await userSvc.login(values);
+        const resp = await userService.login(values);
 
         if (resp.status && resp.data) {
-            navigate("/login");
+            goToLogin();
         } else {
             alert(resp.message);
         }
     }
+
+    const goToLogin = () => {
+        if (searchParams.get("client") === "seller") {
+            return navigate("/login/seller");
+        }
+        navigate("/login");
+    };
 
     return (
         <Container size={460} my={30}>
@@ -115,15 +122,26 @@ export default function RegisterPage() {
                     <SegmentedControl
                         radius="xl"
                         size="md"
-                        data={["Register as Customer", "Register as Seller"]}
+                        mt={20}
+                        defaultValue={searchParams.get("client") ?? "customer"}
+                        data={[
+                            {
+                                value: "customer",
+                                label: "Register as Customer",
+                            },
+                            { value: "seller", label: "Register as Seller" },
+                        ]}
                         classNames={classes}
+                        onChange={(data) => {
+                            setSearchParams(`client=${data}`);
+                        }}
                     />
                     <Group justify="space-between" mt="xl">
                         <Anchor
                             component="button"
                             type="button"
                             c="dimmed"
-                            onClick={() => navigate("/login")}
+                            onClick={goToLogin}
                             size="xs"
                         >
                             Already have an account? Login
