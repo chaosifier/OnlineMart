@@ -2,6 +2,9 @@ import HomePage from "./pages/home";
 import LoginPage from "./pages/login/loginPage";
 import RegisterPage from "./pages/register/registerPage";
 import ClientLayout from "./components/layout/client/clientLayout";
+import ProductDetailPage from "./pages/product/detail/productDetailPage";
+import ProductsListingPage from "./pages/product/list/productsListingPage";
+import ProductAddUpdatePage from "./pages/product/addUpdate/productAddUpdatePage";
 
 const routes = [
     {
@@ -19,6 +22,27 @@ const routes = [
             {
                 path: "/",
                 element: <HomePage />,
+            },
+        ],
+    },
+    {
+        path: "/seller",
+        children: [
+            {
+                path: "/seller/products",
+                element: <ProductsListingPage />,
+            },
+            {
+                path: "/seller/products/:id",
+                element: <ProductDetailPage />,
+            },
+            {
+                path: "/seller/products/create",
+                element: <ProductAddUpdatePage />,
+            },
+            {
+                path: "/seller/products/:id/update",
+                element: <ProductAddUpdatePage />,
             },
         ],
     },

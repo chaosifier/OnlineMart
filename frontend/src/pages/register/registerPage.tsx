@@ -7,6 +7,7 @@ import {
     Group,
     Anchor,
     Stack,
+    SegmentedControl,
 } from "@mantine/core";
 import classes from "./registerPage.module.css";
 import { useForm } from "@mantine/form";
@@ -125,6 +126,13 @@ export default function RegisterPage() {
                             Register
                         </Button>
                     </Group>
+
+                    <SegmentedControl
+                        radius="xl"
+                        size="md"
+                        data={["Register as Customer", "Register as Seller"]}
+                        classNames={classes}
+                    />
                 </form>
             </Paper>
         </Container>
