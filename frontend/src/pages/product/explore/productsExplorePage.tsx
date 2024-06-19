@@ -1,62 +1,133 @@
 import {
-    Card,
-    Text,
-    SimpleGrid,
+    TextInput,
+    Code,
     UnstyledButton,
-    Anchor,
+    Badge,
+    Text,
     Group,
-    useMantineTheme,
+    ActionIcon,
+    Tooltip,
+    rem,
     Container,
-    Grid,
-    ScrollArea,
+    Title,
+    SimpleGrid,
 } from "@mantine/core";
 import {
-    IconCreditCard,
-    IconBuildingBank,
-    IconRepeat,
-    IconReceiptRefund,
-    IconReceipt,
-    IconReceiptTax,
-    IconReport,
-    IconCashBanknote,
-    IconCoin,
+    IconBulb,
+    IconUser,
+    IconCheckbox,
+    IconSearch,
+    IconPlus,
 } from "@tabler/icons-react";
+import ProductsExploreComponent from "../exploreList/productsExploreComponent";
 import classes from "./productsExplorePage.module.css";
-import { ProductCard } from "../card/productCard";
 
-const mockdata = [
-    { title: "Credit cards", icon: IconCreditCard, color: "violet" },
-    { title: "Banks nearby", icon: IconBuildingBank, color: "indigo" },
-    { title: "Transfers", icon: IconRepeat, color: "blue" },
-    { title: "Refunds", icon: IconReceiptRefund, color: "green" },
-    { title: "Receipts", icon: IconReceipt, color: "teal" },
-    { title: "Taxes", icon: IconReceiptTax, color: "cyan" },
-    { title: "Reports", icon: IconReport, color: "pink" },
-    { title: "Payments", icon: IconCoin, color: "red" },
-    { title: "Cashback", icon: IconCashBanknote, color: "orange" },
+const links = [
+    { icon: IconBulb, label: "Activity", notifications: 3 },
+    { icon: IconCheckbox, label: "Tasks", notifications: 4 },
+    { icon: IconUser, label: "Contacts" },
+];
+
+const collections = [
+    { emoji: "👍", label: "Sales" },
+    { emoji: "🚚", label: "Deliveries" },
+    { emoji: "💸", label: "Discounts" },
+    { emoji: "💰", label: "Profits" },
+    { emoji: "✨", label: "Reports" },
+    { emoji: "🛒", label: "Orders" },
+    { emoji: "📅", label: "Events" },
+    { emoji: "🙈", label: "Debts" },
+    { emoji: "💁‍♀️", label: "Customers" },
 ];
 
 export default function ProductsExplorePage() {
-    const theme = useMantineTheme();
-
-    const items = mockdata.map((item) => (
-        <UnstyledButton key={item.title} className={classes.item}>
-            <item.icon color={theme.colors[item.color][6]} size="2rem" />
-            <Text size="xs" mt={7}>
-                {item.title}
-            </Text>
+    const mainLinks = links.map((link) => (
+        <UnstyledButton key={link.label} className={classes.mainLink}>
+            <div className={classes.mainLinkInner}>
+                <link.icon
+                    size={20}
+                    className={classes.mainLinkIcon}
+                    stroke={1.5}
+                />
+                <span>{link.label}</span>
+            </div>
+            {link.notifications && (
+                <Badge
+                    size="sm"
+                    variant="filled"
+                    className={classes.mainLinkBadge}
+                >
+                    {link.notifications}
+                </Badge>
+            )}
         </UnstyledButton>
     ));
 
+    const collectionLinks = collections.map((collection) => (
+        <a
+            href="#"
+            onClick={(event) => event.preventDefault()}
+            key={collection.label}
+            className={classes.collectionLink}
+        >
+            <span style={{ marginRight: rem(9), fontSize: rem(16) }}>
+                {collection.emoji}
+            </span>{" "}
+            {collection.label}
+        </a>
+    ));
+
     return (
-        <Container my="md">
-            <Grid>
-                    {mockdata.map((d) => (
-                        <Grid.Col span={{ base: 12, xs: 4 }}>
-                            <ProductCard />
-                        </Grid.Col>
-                    ))}
-                </Grid>
-        </Container>
+        <div className={classes.wrapper}>
+            <nav className={classes.navbar}>
+                <TextInput
+                    placeholder="Search"
+                    size="xs"
+                    leftSection={
+                        <IconSearch
+                            style={{ width: rem(12), height: rem(12) }}
+                            stroke={1.5}
+                        />
+                    }
+                    rightSectionWidth={70}
+                    rightSection={
+                        <Code className={classes.searchCode}>Ctrl + K</Code>
+                    }
+                    styles={{ section: { pointerEvents: "none" } }}
+                    mb="sm"
+                />
+
+                <div className={classes.section}>
+                    <div className={classes.mainLinks}>{mainLinks}</div>
+                </div>
+
+                <div className={classes.section}>
+                    <Group
+                        className={classes.collectionsHeader}
+                        justify="space-between"
+                    >
+                        <Text size="xs" fw={500} c="dimmed">
+                            Collections
+                        </Text>
+                        <Tooltip
+                            label="Create collection"
+                            withArrow
+                            position="right"
+                        >
+                            <ActionIcon variant="default" size={18}>
+                                <IconPlus
+                                    style={{ width: rem(12), height: rem(12) }}
+                                    stroke={1.5}
+                                />
+                            </ActionIcon>
+                        </Tooltip>
+                    </Group>
+                    <div className={classes.collections}>{collectionLinks}</div>
+                </div>
+            </nav>
+            <Container>
+                <ProductsExploreComponent />
+            </Container>
+        </div>
     );
 }
