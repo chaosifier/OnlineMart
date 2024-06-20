@@ -21,7 +21,6 @@ import {
     IconPlus,
 } from "@tabler/icons-react";
 import classes from "./exploreSidebarComponent.module.css";
-import { useParams } from "react-router-dom";
 
 const links = [
     { icon: IconBulb, label: "Activity", notifications: 3 },
@@ -41,10 +40,10 @@ const collections = [
     { emoji: "💁‍♀️", label: "Customers" },
 ];
 
-export default function ExploreSidebarComponent() {  
-    const queryParams = new URLSearchParams(window.location.search)
-    const searchTerm = queryParams.get("query")
-    
+export default function ExploreSidebarComponent() {
+    const queryParams = new URLSearchParams(window.location.search);
+    const searchTerm = queryParams.get("query");
+
     const mainLinks = links.map((link) => (
         <UnstyledButton key={link.label} className={classes.mainLink}>
             <div className={classes.mainLinkInner}>
@@ -80,7 +79,7 @@ export default function ExploreSidebarComponent() {
             {collection.label}
         </a>
     ));
-console.log(searchTerm, 'searchTerm');
+
     return (
         <nav className={classes.navbar}>
             {searchTerm && (

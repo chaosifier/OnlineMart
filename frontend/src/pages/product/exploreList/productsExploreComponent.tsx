@@ -1,15 +1,4 @@
-import {
-    Card,
-    Text,
-    SimpleGrid,
-    UnstyledButton,
-    Anchor,
-    Group,
-    useMantineTheme,
-    Container,
-    Grid,
-    ScrollArea,
-} from "@mantine/core";
+import { Text, UnstyledButton, useMantineTheme, Grid } from "@mantine/core";
 import {
     IconCreditCard,
     IconBuildingBank,
@@ -51,7 +40,7 @@ export default function ProductsExploreComponent() {
     return (
         <Grid m={15}>
             {mockdata.map((d) => (
-                <Grid.Col span={{ base: 12, xs: 4 }}>
+                <Grid.Col span={{ base: 12, xs: 4 }} key={d.title}>
                     <ProductCard />
                 </Grid.Col>
             ))}

@@ -17,6 +17,7 @@ interface SearchComponentProps {
     disableRightSection?: boolean;
     placeholder?: string;
     useDebounce?: boolean;
+    debounceWaitTime?: number;
 }
 
 const Search: React.FC<SearchComponentProps> = ({
@@ -26,10 +27,13 @@ const Search: React.FC<SearchComponentProps> = ({
     placeholder,
     enableOnEnter = true,
     disableRightSection = false,
+    debounceWaitTime = 200,
 }) => {
     const theme = useMantineTheme();
     const [searchTerm, setSearchTerm] = useState("");
-    const [debounced] = useDebouncedValue(searchTerm, 200, { leading: true });
+    const [debounced] = useDebouncedValue(searchTerm, debounceWaitTime, {
+        leading: true,
+    });
 
     useEffect(() => {
         onDebounce && onDebounce(debounced);
