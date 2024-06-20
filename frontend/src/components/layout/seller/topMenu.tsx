@@ -16,10 +16,10 @@ import {
     IconTrash,
 } from "@tabler/icons-react";
 
-import classes from "./sellerLayout.module.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { User } from "../../../types/user";
+import classes from "./sellerLayout.module.css";
 
 interface ILoggedInSeller {
     user: User;
