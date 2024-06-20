@@ -74,7 +74,7 @@ const routes: RouteObject[] = [
                 element: <ProductsListingPage />,
             },
             {
-                path: "/seller/:id",
+                path: "/seller/profile",
                 element: <SellerProfilePage />,
             },
             {

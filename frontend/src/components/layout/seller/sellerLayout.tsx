@@ -4,7 +4,7 @@ import classes from "./sellerLayout.module.css";
 import TopMenu from "./topMenu";
 
 import { UserSessionContext } from "../../../context/UserSession";
-import SellerSideBar from "./sideBar";
+import { SideBar } from "./sidebar";
 
 const SellerLayout = () => {
     const { isLoggedIn, user } = useContext(UserSessionContext);
@@ -19,7 +19,7 @@ const SellerLayout = () => {
                 </Container>
             </header>
             <main>
-                <SellerSideBar />
+                <SideBar />
             </main>
         </>
     );
