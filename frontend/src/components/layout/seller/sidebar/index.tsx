@@ -28,11 +28,11 @@ const sideBarMenus: MenuLinks[] = [
                 link: "/seller/products/create",
                 menuId: "product_create",
             },
-            {
-                label: "Update",
-                link: "/seller/products/update",
-                menuId: "product_update",
-            },
+            // {
+            //     label: "Update",
+            //     link: "/seller/products/update",
+            //     menuId: "product_update",
+            // },
         ],
     },
 ];
