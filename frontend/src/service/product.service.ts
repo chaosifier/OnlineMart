@@ -57,6 +57,20 @@ class ProductService implements Service<Product, Product, number> {
         });
     }
     async get(id: number): Promise<BaseResponse<Product | null>> {
+        let fakeData = {
+            status: true,
+            data: {
+                id: 1,
+                title: "iPhone 11 Pro Max",
+                description: "Comes with 128 GB storage. Build fully functional accessible web applications faster than ever – Mantine b includes more than 120 customizable components and hooks to cover you in any situation",
+                price: 999,
+                images: ["https://picsum.photos/seed/a/200/300", "https://picsum.photos/seed/b/200/300"],
+                category: "cell-phone",
+            },
+            message: "",
+        };
+        return fakeData;
+
         return await Backend.apply<Product>({
             ...endpoints.backendService.endpoints.product.getSingle,
         });
