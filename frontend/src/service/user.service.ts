@@ -1,7 +1,7 @@
 import { endpoints } from "../common/config";
 import { Backend } from "../common/http";
 import { Service } from "../common/service";
-import { BaseResponse } from "../types/response";
+import { GenericResponse } from "../types/response";
 import {
     LoginRequest,
     LoginResponse,
@@ -11,9 +11,7 @@ import {
 } from "../types/user";
 
 class UserService implements Service<User, User, number> {
-    async login(
-        data: LoginRequest
-    ): Promise<BaseResponse<LoginResponse | null>> {
+    async login(data: LoginRequest): Promise<GenericResponse<LoginResponse>> {
         return await Backend.apply<LoginResponse>({
             ...endpoints.backendService.endpoints.user.login,
             data: data,
@@ -22,7 +20,7 @@ class UserService implements Service<User, User, number> {
 
     async register(
         data: RegisterRequest
-    ): Promise<BaseResponse<RegisterResponse | null>> {
+    ): Promise<GenericResponse<RegisterResponse | null>> {
         return await Backend.apply<RegisterResponse>({
             ...endpoints.backendService.endpoints.user.register,
             data: data,

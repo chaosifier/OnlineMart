@@ -14,40 +14,41 @@ import {
 import Search from "../../../components/common/search";
 import { IconEdit, IconEye, IconTrash } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
+import { ProductBase } from "../../../types/product";
 
-const data = [
+const data: ProductBase[] = [
     {
-        id: "1",
-        name: "Iphone 14 Pro max",
-        price: "$2150",
+        id: 1,
+        title: "Iphone 14 Pro max",
+        price: 2150,
         brand: "apple",
         category: ["electronics", "cellphone"],
     },
     {
-        id: "2",
-        name: "Iphone 15 Pro max",
-        price: "$2350",
+        id: 2,
+        title: "Iphone 15 Pro max",
+        price: 2350,
         brand: "apple",
         category: ["electronics", "cellphone"],
     },
     {
-        id: "3",
-        name: "Iphone 13 Pro max",
-        price: "$950",
+        id: 3,
+        title: "Iphone 13 Pro max",
+        price: 950,
         brand: "apple",
         category: ["electronics", "cellphone"],
     },
     {
-        id: "4",
-        name: "Iphone 11 Pro max",
-        price: "$950",
+        id: 4,
+        title: "Iphone 11 Pro max",
+        price: 950,
         brand: "apple",
         category: ["electronics", "cellphone"],
     },
     {
-        id: "5",
-        name: "Iphone 13 Pro max",
-        price: "$1200",
+        id: 5,
+        title: "Iphone 13 Pro max",
+        price: 1200,
         brand: "apple",
         category: ["electronics", "cellphone"],
     },
@@ -57,7 +58,7 @@ export default function ProductsListingPage() {
     const [activePage, setPage] = useState(1);
     const navigate = useNavigate();
 
-    const handleProductDeletion = (id: string) => {
+    const handleProductDeletion = (id: number) => {
         // run delete function
     };
 
@@ -67,11 +68,11 @@ export default function ProductsListingPage() {
                 <Table.Td>
                     <Group gap="sm">
                         <Text size="sm" fw={500}>
-                            {item.name}
+                            {item.title}
                         </Text>
                     </Group>
                 </Table.Td>
-                <Table.Td>{item.price}</Table.Td>
+                <Table.Td>${item.price}</Table.Td>
                 <Table.Td>{item.brand}</Table.Td>
                 <Table.Td>
                     <Group>

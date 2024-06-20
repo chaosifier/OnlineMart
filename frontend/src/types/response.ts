@@ -1,7 +1,18 @@
-export type BaseResponse<T> = {
+type Response = {
     status: boolean;
-    data: T | ErrorPayload;
     message: string;
+};
+
+export type GenericResponse<T> = Response & {
+    data?: T | ErrorPayload;
+};
+
+export type BaseResponseWithSuccess<T> = Response & {
+    data: T;
+};
+
+export type BaseResponseWithError = Response & {
+    data?: ErrorPayload;
 };
 
 export type PaginatedPayload<T> = {
@@ -9,15 +20,6 @@ export type PaginatedPayload<T> = {
     records: Array<T>;
 };
 
-// export type ErrorPayloadItem<T> = {
-//     [key in keyof T] : Array<string>
-// }
-
 export type ErrorPayload = {
     [key: string]: Array<string>;
 };
-
-// export type ErrorPayloadItem = {
-//     key: string,
-//     values: Array<string>
-// }
