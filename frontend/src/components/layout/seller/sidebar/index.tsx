@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Group, Code, ScrollArea, Text } from "@mantine/core";
+import { Outlet, useLocation } from "react-router-dom";
+import { Group, Code, ScrollArea, Text, Container, rem } from "@mantine/core";
 import { IconGiftFilled, IconShoppingCart } from "@tabler/icons-react";
-import { GroupLinks } from "../groupLinks";
+import { GroupLinks, MenuLinks } from "../groupLinks";
 
 import classes from "./sidebar.module.css";
 
-const sideBarMenus = [
+const sideBarMenus: MenuLinks[] = [
     {
         label: "Order",
         menuId: "order",
@@ -31,12 +32,26 @@ const sideBarMenus = [
     },
 ];
 
+const getActiveMenu = (menus: MenuLinks[], match: string): string => {
+    const matched = menus.map((item: MenuLinks) => {
+        if (item.link && item.link === match) {
+            return item.menuId;
+        }
+        return getActiveMenu(item.links ?? [], match);
+    });
+    return matched.filter((o) => o)[0];
+};
+
 export function SideBar() {
-    const [activeMenu, setActiveMenu] = useState("order");
+    const { pathname } = useLocation();
+    const [activeMenu, setActiveMenu] = useState(() => {
+        return getActiveMenu(sideBarMenus, pathname);
+    });
 
     const links = sideBarMenus.map((item) => (
         <GroupLinks
             {...item}
+            menu={item}
             key={item.label}
             setActiveMenu={setActiveMenu}
             activeMenu={activeMenu}
@@ -44,17 +59,22 @@ export function SideBar() {
     ));
 
     return (
-        <nav className={classes.navbar}>
-            <div className={classes.header}>
-                <Group justify="space-between">
-                    <Text>Online Mart</Text>
-                    <Code fw={700}>v3.1.2</Code>
-                </Group>
-            </div>
+        <div style={{ display: "flex" }}>
+            <nav className={classes.navbar}>
+                <div className={classes.header}>
+                    <Group justify="space-between">
+                        <Text style={{ width: rem(120) }}>Online Mart</Text>
+                        <Code fw={700}>v1.1.0</Code>
+                    </Group>
+                </div>
 
-            <ScrollArea className={classes.links}>
-                <div className={classes.linksInner}>{links}</div>
-            </ScrollArea>
-        </nav>
+                <ScrollArea className={classes.links}>
+                    <div className={classes.linksInner}>{links}</div>
+                </ScrollArea>
+            </nav>
+            <Container>
+                <Outlet />
+            </Container>
+        </div>
     );
 }
