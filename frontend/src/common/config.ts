@@ -7,12 +7,12 @@ export const endpoints = {
             user: {
                 register: {
                     url: "/register",
-                    method: "POST"
+                    method: "POST",
                 },
                 login: {
                     url: "/login",
-                    method: "POST"
-                }
+                    method: "POST",
+                },
             },
             product: {
                 add: {
@@ -29,11 +29,35 @@ export const endpoints = {
                 },
                 update: {
                     url: "/products/{id}",
-                    method: "PATCH",
+                    method: "POST",
                 },
                 delete: {
                     url: "/products/{id}",
                     method: "DELETE",
+                },
+            },
+            role: {
+                getSingle: {
+                    url: "/roles/{id}",
+                    method: "GET",
+                },
+                getAll: {
+                    url: "/roles",
+                    method: "GET",
+                },
+            },
+            brand: {
+                add: {
+                    url: "/brands",
+                    method: "POST",
+                },
+                getSingle: {
+                    url: "/brands/{id}",
+                    method: "GET",
+                },
+                getAll: {
+                    url: "/brands",
+                    method: "GET",
                 },
             },
             category: {

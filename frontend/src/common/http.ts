@@ -5,7 +5,7 @@ import axios, {
     AxiosError,
 } from "axios";
 import { backendServiceBaseUrl } from "./config";
-import { BaseResponse } from "../types/response";
+import { GenericResponse, BaseResponseWithSuccess } from "../types/response";
 
 class Http {
     static async apply<D>(
@@ -27,9 +27,12 @@ export class Backend {
 
     static async apply<D>(
         config: AxiosRequestConfig
-    ): Promise<BaseResponse<D>> {
+    ): Promise<GenericResponse<D>> {
         try {
-            return Http.apply<BaseResponse<D>>(Backend.axiosInstance, config);
+            return Http.apply<BaseResponseWithSuccess<D>>(
+                Backend.axiosInstance,
+                config
+            );
         } catch (err) {
             const resp = {
                 status: false,
