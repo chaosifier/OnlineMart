@@ -1,93 +1,113 @@
-import cx from "clsx";
 import { useState } from "react";
 import {
     Table,
-    Checkbox,
     ScrollArea,
-    Group,
-    Avatar,
     Text,
     rem,
     Container,
     Flex,
+    Group,
+    Badge,
+    Pagination,
+    Tooltip,
 } from "@mantine/core";
-import classes from "./productsListingPage.module.css";
 import Search from "../../../components/common/search";
+import { IconEdit, IconEye, IconTrash } from "@tabler/icons-react";
+import { useNavigate } from "react-router-dom";
 
 const data = [
     {
         id: "1",
-        avatar: "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-1.png",
-        name: "Robert Wolfkisser",
-        job: "Engineer",
-        email: "rob_wolf@gmail.com",
+        name: "Iphone 14 Pro max",
+        price: "$2150",
+        brand: "apple",
+        category: ["electronics", "cellphone"],
     },
     {
         id: "2",
-        avatar: "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-7.png",
-        name: "Jill Jailbreaker",
-        job: "Engineer",
-        email: "jj@breaker.com",
+        name: "Iphone 15 Pro max",
+        price: "$2350",
+        brand: "apple",
+        category: ["electronics", "cellphone"],
     },
     {
         id: "3",
-        avatar: "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-2.png",
-        name: "Henry Silkeater",
-        job: "Designer",
-        email: "henry@silkeater.io",
+        name: "Iphone 13 Pro max",
+        price: "$950",
+        brand: "apple",
+        category: ["electronics", "cellphone"],
     },
     {
         id: "4",
-        avatar: "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-3.png",
-        name: "Bill Horsefighter",
-        job: "Designer",
-        email: "bhorsefighter@gmail.com",
+        name: "Iphone 11 Pro max",
+        price: "$950",
+        brand: "apple",
+        category: ["electronics", "cellphone"],
     },
     {
         id: "5",
-        avatar: "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-10.png",
-        name: "Jeremy Footviewer",
-        job: "Manager",
-        email: "jeremy@foot.dev",
+        name: "Iphone 13 Pro max",
+        price: "$1200",
+        brand: "apple",
+        category: ["electronics", "cellphone"],
     },
 ];
 
 export default function ProductsListingPage() {
-    const [selection, setSelection] = useState(["1"]);
-    const toggleRow = (id: string) =>
-        setSelection((current) =>
-            current.includes(id)
-                ? current.filter((item) => item !== id)
-                : [...current, id]
-        );
-    const toggleAll = () =>
-        setSelection((current) =>
-            current.length === data.length ? [] : data.map((item) => item.id)
-        );
+    const [activePage, setPage] = useState(1);
+    const navigate = useNavigate();
+
+    const handleProductDeletion = (id: string) => {
+        // run delete function
+    };
 
     const rows = data.map((item) => {
-        const selected = selection.includes(item.id);
         return (
-            <Table.Tr
-                key={item.id}
-                className={cx({ [classes.rowSelected]: selected })}
-            >
-                <Table.Td>
-                    <Checkbox
-                        checked={selection.includes(item.id)}
-                        onChange={() => toggleRow(item.id)}
-                    />
-                </Table.Td>
+            <Table.Tr key={item.id}>
                 <Table.Td>
                     <Group gap="sm">
-                        <Avatar size={26} src={item.avatar} radius={26} />
                         <Text size="sm" fw={500}>
                             {item.name}
                         </Text>
                     </Group>
                 </Table.Td>
-                <Table.Td>{item.email}</Table.Td>
-                <Table.Td>{item.job}</Table.Td>
+                <Table.Td>{item.price}</Table.Td>
+                <Table.Td>{item.brand}</Table.Td>
+                <Table.Td>
+                    <Group>
+                        {item.category.map((it) => (
+                            <Badge color="orange" variant="light" key={it}>
+                                {it}
+                            </Badge>
+                        ))}
+                    </Group>
+                </Table.Td>
+                <Table.Td>
+                    <Flex gap={rem(10)}>
+                        <Tooltip label="View">
+                            <IconEye
+                                onClick={() => navigate(`/products/${item.id}`)}
+                                cursor={"pointer"}
+                            />
+                        </Tooltip>
+                        <Tooltip label="Delete">
+                            <IconTrash
+                                onClick={() => handleProductDeletion(item.id)}
+                                cursor={"pointer"}
+                            />
+                        </Tooltip>
+                        <Tooltip label="Edit">
+                            <IconEdit
+                                onClick={() =>
+                                    navigate(
+                                        `/seller/products/update/${item.id}`
+                                    )
+                                }
+                                cursor={"pointer"}
+                            />
+                        </Tooltip>
+                    </Flex>
+                </Table.Td>
             </Table.Tr>
         );
     });
@@ -108,27 +128,29 @@ export default function ProductsListingPage() {
             </Flex>
 
             <ScrollArea>
-                <Table miw={800} verticalSpacing="sm">
+                <Table
+                    miw={800}
+                    verticalSpacing="sm"
+                    striped
+                    highlightOnHover
+                    withTableBorder
+                    withColumnBorders
+                >
                     <Table.Thead>
                         <Table.Tr>
-                            <Table.Th style={{ width: rem(40) }}>
-                                <Checkbox
-                                    onChange={toggleAll}
-                                    checked={selection.length === data.length}
-                                    indeterminate={
-                                        selection.length > 0 &&
-                                        selection.length !== data.length
-                                    }
-                                />
-                            </Table.Th>
-                            <Table.Th>User</Table.Th>
-                            <Table.Th>Email</Table.Th>
-                            <Table.Th>Job</Table.Th>
+                            <Table.Th>Name</Table.Th>
+                            <Table.Th>Price</Table.Th>
+                            <Table.Th>Brand</Table.Th>
+                            <Table.Th>Category</Table.Th>
+                            <Table.Th>Action</Table.Th>
                         </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>{rows}</Table.Tbody>
                 </Table>
             </ScrollArea>
+            <Flex justify={"center"} mt="md">
+                <Pagination total={5} value={activePage} onChange={setPage} />
+            </Flex>
         </Container>
     );
 }
