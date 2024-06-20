@@ -44,6 +44,7 @@ const getActiveMenu = (menus: MenuLinks[], match: string): string => {
         }
         return getActiveMenu(item.links ?? [], match);
     });
+
     return matched.filter((o) => o)[0];
 };
 
