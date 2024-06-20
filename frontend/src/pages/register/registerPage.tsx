@@ -8,6 +8,7 @@ import {
     Anchor,
     Stack,
     SegmentedControl,
+    PasswordInput,
 } from "@mantine/core";
 import classes from "./registerPage.module.css";
 import { useForm } from "@mantine/form";
@@ -105,7 +106,7 @@ export default function RegisterPage() {
                             radius="md"
                             error={form.errors.email}
                         />
-                        <TextInput
+                        <PasswordInput
                             label="Password"
                             placeholder="Enter password"
                             value={form.values.password}
