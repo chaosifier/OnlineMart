@@ -19,6 +19,11 @@ const sideBarMenus: MenuLinks[] = [
         icon: IconGiftFilled,
         links: [
             {
+                label: "List",
+                link: "/seller/products",
+                menuId: "product_list",
+            },
+            {
                 label: "Create",
                 link: "/seller/products/create",
                 menuId: "product_create",
