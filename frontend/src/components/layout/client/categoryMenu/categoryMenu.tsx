@@ -16,6 +16,8 @@ import {
     ScrollArea,
     rem,
     useMantineTheme,
+    Menu,
+    Container,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import {
@@ -26,138 +28,77 @@ import {
     IconFingerprint,
     IconCoin,
     IconChevronDown,
+    IconChevronRight,
 } from "@tabler/icons-react";
 import classes from "./categoryMenu.module.css";
-
-const mockdata = [
-    {
-        icon: IconCode,
-        title: "Open source",
-        description: "This Pokémon’s cry is very loud and distracting",
-    },
-    {
-        icon: IconCoin,
-        title: "Free for everyone",
-        description: "The fluid of Smeargle’s tail secretions changes",
-    },
-    {
-        icon: IconBook,
-        title: "Documentation",
-        description: "Yanma is capable of seeing 360 degrees without",
-    },
-    {
-        icon: IconFingerprint,
-        title: "Security",
-        description: "The shell’s rounded shape and the grooves on its.",
-    },
-    {
-        icon: IconChartPie3,
-        title: "Analytics",
-        description: "This Pokémon uses its flying ability to quickly chase",
-    },
-    {
-        icon: IconNotification,
-        title: "Notifications",
-        description: "Combusken battles with the intensely hot flames it spews",
-    },
-];
+import { useCallback, useEffect, useState } from "react";
+import { Category } from "../../../../types/category";
+import { categoryService } from "../../../../service/category.service";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function CategoryMenuComponent() {
-    const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
-        useDisclosure(false);
-    const [linksOpened, { toggle: toggleLinks }] = useDisclosure(false);
-    const theme = useMantineTheme();
+    const [catLinks, setCatLinks] = useState<JSX.Element[]>();
+    const navigate = useNavigate();
+    const fetchData = useCallback(async () => {
+        let res = await categoryService.getAll();
+        if (res.status) {
+            let links = getMenuItems(res.data as Array<Category>);
+            setCatLinks(links);
+        } else {
+            alert(res.message);
+        }
+    }, []);
 
-    const links = mockdata.map((item) => (
-        <UnstyledButton className={classes.subLink} key={item.title}>
-            <Group wrap="nowrap" align="flex-start">
-                <ThemeIcon size={34} variant="default" radius="md">
-                    <item.icon
-                        style={{ width: rem(22), height: rem(22) }}
-                        color={theme.colors.blue[6]}
-                    />
-                </ThemeIcon>
-                <div>
-                    <Text size="sm" fw={500}>
-                        {item.title}
-                    </Text>
-                    <Text size="xs" c="dimmed">
-                        {item.description}
-                    </Text>
-                </div>
-            </Group>
-        </UnstyledButton>
-    ));
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
 
-    return (
-        <Box p={15}>
-            <Group h="100%" gap={0} visibleFrom="sm">
-                        <a href="#" className={classes.link}>
-                            Home
-                        </a>
-                        <HoverCard
-                            width={600}
-                            position="bottom"
-                            radius="md"
-                            shadow="md"
-                            withinPortal
-                        >
-                            <HoverCard.Target>
-                                <a href="#" className={classes.link}>
-                                    <Center inline>
-                                        <Box component="span" mr={5}>
-                                            Features
-                                        </Box>
-                                        <IconChevronDown
-                                            style={{
-                                                width: rem(16),
-                                                height: rem(16),
-                                            }}
-                                            color={theme.colors.blue[6]}
-                                        />
-                                    </Center>
-                                </a>
-                            </HoverCard.Target>
+    const handleCategoryClick = (slug: string) => {
+        navigate(`/products?category=${slug}`);
+    };
 
-                            <HoverCard.Dropdown style={{ overflow: "hidden" }}>
-                                <Group justify="space-between" px="md">
-                                    <Text fw={500}>Features</Text>
-                                    <Anchor href="#" fz="xs">
-                                        View all
-                                    </Anchor>
-                                </Group>
+    const getMenuItem = (link: Category) => {
+        return link.children.length > 0 ? (
+            <Menu
+                width={200}
+                shadow="md"
+                position="right-start"
+                
+                closeOnItemClick={false}
+            >
+                <Menu.Target>
+                    <Menu.Item rightSection={<IconChevronRight size={18} />}>
+                        {link.title}
+                    </Menu.Item>
+                </Menu.Target>
+                <Menu.Dropdown>{getMenuItems(link.children)}</Menu.Dropdown>
+            </Menu>
+        ) : (
+            <Menu
+                width={200}
+                shadow="md"
+                position="right-start"
+                closeOnItemClick={false}
+            >
+                <Menu.Item>
+                    <UnstyledButton
+                        onClick={() => handleCategoryClick(link.slug)}
+                    >
+                        {link.title}
+                    </UnstyledButton>
+                </Menu.Item>
+            </Menu>
+        );
+    };
 
-                                <Divider my="sm" />
+    const getMenuItems = (links: Array<Category>) => {
+        const items = links.map((link, i) => {
+            return <div key={i}>{getMenuItem(link)}</div>;
+        });
 
-                                <SimpleGrid cols={2} spacing={0}>
-                                    {links}
-                                </SimpleGrid>
+        return items;
+    };
 
-                                <div className={classes.dropdownFooter}>
-                                    <Group justify="space-between">
-                                        <div>
-                                            <Text fw={500} fz="sm">
-                                                Get started
-                                            </Text>
-                                            <Text size="xs" c="dimmed">
-                                                Their food sources have
-                                                decreased, and their numbers
-                                            </Text>
-                                        </div>
-                                        <Button variant="default">
-                                            Get started
-                                        </Button>
-                                    </Group>
-                                </div>
-                            </HoverCard.Dropdown>
-                        </HoverCard>
-                        <a href="#" className={classes.link}>
-                            Learn
-                        </a>
-                        <a href="#" className={classes.link}>
-                            Academy
-                        </a>
-                    </Group>
-        </Box>
-    );
+    return <Group m={10}>{catLinks}</Group>;
 }

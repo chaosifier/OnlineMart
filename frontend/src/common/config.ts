@@ -36,6 +36,28 @@ export const endpoints = {
                     method: "DELETE",
                 },
             },
+            category: {
+                add: {
+                    url: "/categories",
+                    method: "POST",
+                },
+                getSingle: {
+                    url: "/categories/{id}",
+                    method: "GET",
+                },
+                getAll: {
+                    url: "/categories",
+                    method: "GET",
+                },
+                update: {
+                    url: "/categories/{id}",
+                    method: "PATCH",
+                },
+                delete: {
+                    url: "/categories/{id}",
+                    method: "DELETE",
+                },
+            },
         },
     },
 };
