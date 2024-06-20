@@ -2,7 +2,6 @@ import {
     useMantineTheme,
     rem,
     TextInput,
-    UnstyledButton,
     ActionIcon,
 } from "@mantine/core";
 import { IconSearch, IconArrowRight } from "@tabler/icons-react";
@@ -68,19 +67,18 @@ const Search: React.FC<SearchComponentProps> = ({
             }
             rightSection={
                 !disableRightSection && (
-                    <UnstyledButton onClick={handleEnterPress}>
-                        <ActionIcon
-                            size={32}
-                            radius="xl"
-                            color={theme.primaryColor}
-                            variant="filled"
-                        >
-                            <IconArrowRight
-                                style={{ width: rem(18), height: rem(18) }}
-                                stroke={1.5}
-                            />
-                        </ActionIcon>
-                    </UnstyledButton>
+                    <ActionIcon
+                        onClick={handleEnterPress}
+                        size={32}
+                        radius="xl"
+                        color={theme.primaryColor}
+                        variant="filled"
+                    >
+                        <IconArrowRight
+                            style={{ width: rem(18), height: rem(18) }}
+                            stroke={1.5}
+                        />
+                    </ActionIcon>
                 )
             }
         />

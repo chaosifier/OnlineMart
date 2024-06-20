@@ -15,11 +15,7 @@ export const endpoints = {
                 }
             },
             product: {
-                getAll: {
-                    url: "/products",
-                    method: "GET",
-                },
-                addPost: {
+                add: {
                     url: "/products",
                     method: "POST",
                 },
@@ -27,13 +23,17 @@ export const endpoints = {
                     url: "/products/{id}",
                     method: "GET",
                 },
-                deletePost: {
-                    url: "/products/{id}",
-                    method: "DELETE",
+                getAll: {
+                    url: "/products",
+                    method: "GET",
                 },
-                updatePost: {
+                update: {
                     url: "/products/{id}",
                     method: "PATCH",
+                },
+                delete: {
+                    url: "/products/{id}",
+                    method: "DELETE",
                 },
             },
         },
