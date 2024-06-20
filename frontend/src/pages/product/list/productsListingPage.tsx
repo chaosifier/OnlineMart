@@ -96,7 +96,7 @@ export default function ProductsListingPage() {
                                 cursor={"pointer"}
                             />
                         </Tooltip>
-                        <Tooltip label="Edit">
+                        {/* <Tooltip label="Edit">
                             <IconEdit
                                 onClick={() =>
                                     navigate(
@@ -105,7 +105,7 @@ export default function ProductsListingPage() {
                                 }
                                 cursor={"pointer"}
                             />
-                        </Tooltip>
+                        </Tooltip> */}
                     </Flex>
                 </Table.Td>
             </Table.Tr>
