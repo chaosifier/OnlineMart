@@ -25,7 +25,8 @@ import { Cart, CartItem } from "../../../types/cart";
 export function CartItemCard(props: { data: CartItem }) {
     const navigate = useNavigate();
     const { quantity } = props.data;
-    const { id, images, title, description, category } = props.data.product;
+    const { id, images, title, description, category, price } =
+        props.data.product;
     const { dispatch } = useContext(CartSessionContext);
 
     const handleRemove = async () => {
@@ -64,13 +65,16 @@ export function CartItemCard(props: { data: CartItem }) {
                     <Badge size="sm" variant="light">
                         {category.title}
                     </Badge>
-                </Group>
-                <Text fz="sm" mt="xs">
+                </Group>             
+                <Text fz="sm">
                     {description}
+                </Text>
+                <Text fz="md" fw={500}>
+                    Price: ${price}
                 </Text>
             </Card.Section>
 
-            <CardSection className={classes.section} mt="md">
+            <CardSection className={classes.section} mt="xs">
                 <Group>
                     <Text>Quantity: </Text>
                     <Text fw={700}>{quantity}</Text>

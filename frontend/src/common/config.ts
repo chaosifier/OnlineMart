@@ -88,7 +88,7 @@ export const endpoints = {
                     method: "DELETE",
                 },
                 checkout: {
-                    url: "/order",
+                    url: "/orders",
                     method: "POST",
                 },
             },

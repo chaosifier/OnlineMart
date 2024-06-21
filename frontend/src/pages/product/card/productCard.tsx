@@ -25,13 +25,15 @@ import { Cart } from "../../../types/cart";
 export function ProductCard(props: { data: Product }) {
     const { isLoggedIn } = useContext(UserSessionContext);
     const navigate = useNavigate();
-    const { id, images, title, description, category } = props.data;
+    const { id, images, title, description, category, price } = props.data;
     const { cart, dispatch } = useContext(CartSessionContext);
     const [inCart, setInCart] = useState(false);
 
     useEffect(() => {
         let toSet =
-            cart && cart.items && cart.items.filter((i) => i.product.id === id).length > 0
+            cart &&
+            cart.items &&
+            cart.items.filter((i) => i.product.id === id).length > 0
                 ? true
                 : false;
         setInCart(toSet);
@@ -84,9 +86,12 @@ export function ProductCard(props: { data: Product }) {
                     <Badge size="sm" variant="light">
                         {category.title}
                     </Badge>
-                </Group>
-                <Text fz="sm" mt="xs">
+                </Group>            
+                <Text fz="sm">
                     {description}
+                </Text>
+                <Text fz="md" fw={500}>
+                    Price: ${price}
                 </Text>
             </Card.Section>
 
