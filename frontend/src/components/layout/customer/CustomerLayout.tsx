@@ -58,9 +58,8 @@ const CustomerLayout = () => {
 
     return (
         <>
-            <header className={classes.header}>
-                <Container className={classes.mainSection} size="md" fluid>
-                    <Group justify="space-around">
+          <Container pl={20} pr={20} className={classes.mainSection} size="md" fluid>
+                    <Group justify="space-between">
                         <UnstyledButton>
                             <Title onClick={goToHome}>Online Mart</Title>
                         </UnstyledButton>
@@ -122,7 +121,6 @@ const CustomerLayout = () => {
                     </Group>
                 </Container>
                 <CategoryMenuComponent />
-            </header>
             <Outlet />
         </>
     );
