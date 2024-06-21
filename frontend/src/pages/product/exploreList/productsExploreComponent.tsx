@@ -1,6 +1,7 @@
-import { Flex, Grid, Group, Loader } from "@mantine/core";
+import { Flex, Grid } from "@mantine/core";
 import { ProductCard } from "../card/productCard";
 import { Product } from "../../../types/product";
+import { CenterPopLoader } from "../../../components/common/loader";
 
 export default function ProductsExploreComponent(props: { data: Product[] }) {
     return props.data && props.data.length > 0 ? (
@@ -13,7 +14,7 @@ export default function ProductsExploreComponent(props: { data: Product[] }) {
         </Grid>
     ) : (
         <Flex justify="center" align="center">
-            <Loader color="blue" />
+            <CenterPopLoader />
         </Flex>
     );
 }
