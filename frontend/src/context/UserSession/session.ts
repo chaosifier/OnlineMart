@@ -32,7 +32,7 @@ export const UserSessionReducer = (prevState: UserSession, action: Action) => {
         case "LOGIN": {
             const newState = {
                 ...prevState,
-                user: action.payload.user as unknown as User,
+                user: action.payload.user as unknown as SessionUser,
             };
             return newState;
         }
