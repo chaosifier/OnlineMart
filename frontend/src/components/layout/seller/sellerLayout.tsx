@@ -7,7 +7,7 @@ import { UserSessionContext } from "../../../context/UserSession";
 import { SideBar } from "./sidebar";
 
 const SellerLayout = () => {
-    const { isLoggedIn, user } = useContext(UserSessionContext);
+    const { user } = useContext(UserSessionContext);
 
     return (
         <>

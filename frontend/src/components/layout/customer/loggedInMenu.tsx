@@ -23,6 +23,7 @@ import {
     UserSessionContext,
     removeUserSession,
 } from "../../../context/UserSession";
+import { useNavigate } from "react-router-dom";
 
 interface ILoggedInUser {
     user: User;
@@ -32,11 +33,13 @@ const LoggedInMenu: React.FC<ILoggedInUser> = ({ user }) => {
     const theme = useMantineTheme();
     const [userMenuOpened, setUserMenuOpened] = useState(false);
     const { dispatch } = useContext(UserSessionContext);
+    const navigate = useNavigate();
 
     const userName = `${user?.firstName} ${user?.lastName}`;
 
     const logout = () => {
         removeUserSession(dispatch);
+        navigate("/");
     };
 
     return (
