@@ -10,7 +10,7 @@ export default function CategoryMenuComponent() {
     const navigate = useNavigate();
     const fetchData = useCallback(async () => {
         const res = await categoryService.getAll();
-        if (res.status) {
+        if (res.success) {
             const links = getMenuItems(res.data as Array<Category>);
             setCatLinks(links);
         } else {
