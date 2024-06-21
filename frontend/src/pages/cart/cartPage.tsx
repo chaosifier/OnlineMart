@@ -34,7 +34,7 @@ export default function CartPage() {
 
             <Stack>
                 <Group justify="end" mb={15}>
-                    <Text size="xl">Total: {cart?.totalPrice}</Text>
+                    <Text size="xl">Total: ${cart?.totalPrice}</Text>
                 </Group>
                 {cart && cart.items && cart.items.length > 0 && (
                     <Group justify="end" mb={15}>
