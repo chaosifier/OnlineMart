@@ -16,10 +16,14 @@ import {
     IconTrash,
 } from "@tabler/icons-react";
 
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useContext, useState } from "react";
 import { User } from "../../../types/user";
 import classes from "./sellerLayout.module.css";
+import {
+    UserSessionContext,
+    removeUserSession,
+} from "../../../context/UserSession";
+import { useNavigate } from "react-router-dom";
 
 interface ILoggedInSeller {
     user: User;
@@ -28,9 +32,15 @@ interface ILoggedInSeller {
 const TopMenu: React.FC<ILoggedInSeller> = ({ user }) => {
     const theme = useMantineTheme();
     const [userMenuOpened, setUserMenuOpened] = useState(false);
+    const { dispatch } = useContext(UserSessionContext);
     const navigate = useNavigate();
 
     const userName = `${user?.firstName} ${user?.lastName}`;
+
+    const logout = () => {
+        removeUserSession(dispatch);
+        navigate("/");
+    };
 
     return (
         <Menu
@@ -113,6 +123,7 @@ const TopMenu: React.FC<ILoggedInSeller> = ({ user }) => {
                     Account settings
                 </Menu.Item>
                 <Menu.Item
+                    onClick={logout}
                     leftSection={
                         <IconLogout
                             style={{

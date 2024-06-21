@@ -14,8 +14,8 @@ import {
 import { useNavigate, useSearchParams } from "react-router-dom";
 import classes from "./loginPage.module.css";
 import { userService } from "../../service/user.service";
-import { useContext, useState } from "react";
-import { LoginResponse } from "../../types/user";
+import { useContext, useEffect, useState } from "react";
+import { LoginResponse, USER_ROLES } from "../../types/user";
 import { ErrorPayload } from "../../types/response";
 import InputErrors from "../../components/common/form/inputErrors";
 import { UserSessionContext, addUserSession } from "../../context/UserSession";
@@ -23,12 +23,17 @@ import { UserSessionContext, addUserSession } from "../../context/UserSession";
 export default function LoginPage() {
     const [errors, setErrors] = useState<{ [key: string]: Array<string> }>({});
     const [searchParams, setSearchParams] = useSearchParams();
-    const { dispatch, isLoggedIn } = useContext(UserSessionContext);
+    const { dispatch, isLoggedIn, user } = useContext(UserSessionContext);
     const navigate = useNavigate();
 
-    if (isLoggedIn) {
-        navigate("/");
-    }
+    useEffect(() => {
+        if (isLoggedIn && user && user?.roles?.[0].slug === USER_ROLES.SELLER) {
+            return navigate("/seller/products");
+        }
+        if (isLoggedIn) {
+            navigate("/");
+        }
+    }, [isLoggedIn]);
 
     const goToRegister = () => {
         if (searchParams.get("client") === "seller") {
@@ -44,10 +49,10 @@ export default function LoginPage() {
         },
         validate: {
             email: (val) => (/^\S+@\S+$/.test(val) ? null : "Invalid email"),
-            password: (val) =>
-                val.length <= 6
-                    ? "Password should include at least 6 characters"
-                    : null,
+            // password: (val) =>
+            //     val.length <= 6
+            //         ? "Password should include at least 6 characters"
+            //         : null,
         },
     });
 
@@ -57,11 +62,11 @@ export default function LoginPage() {
     }): Promise<void> {
         const payload = {
             ...values,
-            registrationType: "CUSTOMER",
+            registrationType: USER_ROLES.CUSTOMER,
         };
 
         if (searchParams.get("client") === "seller") {
-            payload["registrationType"] = "SELLER";
+            payload["registrationType"] = USER_ROLES.SELLER;
         }
         const resp = await userService.login(payload);
 
