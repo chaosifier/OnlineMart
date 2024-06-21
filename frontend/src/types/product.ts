@@ -1,4 +1,13 @@
 export type STATUS = "AVAILABLE" | "OFFLINE";
+export type ORDER_STATUS =
+    | "PENDING"
+    | "PROCESSING"
+    | "SHIPPED"
+    | "DELIVERED"
+    | "CANCELLED"
+    | "RETURN_REQUEST"
+    | "RETURN_PROCESSING"
+    | "RETURNED";
 
 type BrandEntry = {
     id: number;
@@ -34,4 +43,14 @@ export type Product = ProductBase & {
     images: ImageEntry[];
     seller: SellerEntry;
     status: STATUS;
+};
+
+export type OrderLineItem = {
+    id: number;
+    quantity: number;
+    taxAmount: number;
+    totalPrice: number;
+    unitPrice: number;
+    product: Product;
+    status: ORDER_STATUS;
 };

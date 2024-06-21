@@ -1,4 +1,4 @@
-import { Button, Modal, Select } from "@mantine/core";
+import { ActionIcon, Button, Modal, Select } from "@mantine/core";
 
 import { useEffect, useState } from "react";
 import {
@@ -16,34 +16,53 @@ import {
 import Search from "../../../components/common/search";
 import { IconEye, IconPencil } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
-import { Product, ProductBase } from "../../../types/product";
+import { ORDER_STATUS, OrderLineItem } from "../../../types/product";
 import { useDisclosure } from "@mantine/hooks";
-import { productService } from "../../../service/product.service";
+import { orderService } from "../../../service/order.service";
+import { CenterPopLoader } from "../../../components/common/loader";
 
 export default function OrdersListingPage() {
     const [activePage, setPage] = useState(1);
     const [opened, { open, close }] = useDisclosure(false);
-    const [data, setData] = useState<Product[]>([]);
-    const [activeProduct, setActiveProduct] = useState<null | ProductBase>(
+    const [data, setData] = useState<OrderLineItem[] | null>(null);
+    const [activeProduct, setActiveProduct] = useState<null | OrderLineItem>(
         null
     );
+    const [productLineStatus, setProductLineStatus] =
+        useState<ORDER_STATUS | null>(null);
     const navigate = useNavigate();
 
     useEffect(() => {
-        productService.getMyProducts().then((data) => {
-            setData(data.data as Product[]);
+        orderService.getSellerOrder().then((data) => {
+            setData(data.data as OrderLineItem[]);
         });
     }, []);
-
-    const openStatusChangeModal = (id: number) => {
-        const prod = data.filter((i) => i.id === id)[0];
-        setActiveProduct(prod);
-        open();
-    };
 
     const closeStatusChangeModal = () => {
         close();
         setActiveProduct(null);
+    };
+
+    if (!data) {
+        return <CenterPopLoader />;
+    }
+
+    const openStatusChangeModal = (id: number) => {
+        const prod = data.filter((i) => i.id === id)[0];
+        setProductLineStatus(prod.status);
+        setActiveProduct(prod);
+        open();
+    };
+
+    const updateProductOrderLineStatus = () => {
+        if (activeProduct && productLineStatus) {
+            orderService
+                .patchOrderLineItemStatus(activeProduct.id, productLineStatus)
+                .then((d) => {
+                    activeProduct.status = productLineStatus;
+                    closeStatusChangeModal();
+                });
+        }
     };
 
     const rows = data.map((item) => {
@@ -52,23 +71,25 @@ export default function OrdersListingPage() {
                 <Table.Td>
                     <Group gap="sm">
                         <Text size="sm" fw={500}>
-                            {item.title}
+                            {item.product.slug}
                         </Text>
                     </Group>
                 </Table.Td>
-                <Table.Td>${item.price}</Table.Td>
-                <Table.Td>{item.brand.name}</Table.Td>
+                <Table.Td>{item.quantity}</Table.Td>
+                <Table.Td>${item.unitPrice}</Table.Td>
+                <Table.Td>${item.taxAmount}</Table.Td>
+                <Table.Td>${item.totalPrice}</Table.Td>
                 <Table.Td>
                     <Group>
                         <Badge color="orange" variant="light">
-                            {item.category.slug}
+                            {item.product.category.slug}
                         </Badge>
                     </Group>
                 </Table.Td>
                 <Table.Td>
                     <Flex gap={rem(5)}>
                         <Badge color="orange" variant="light">
-                            BOOKED
+                            {item.status}
                         </Badge>
                         <Tooltip label="update status">
                             <IconPencil
@@ -83,7 +104,9 @@ export default function OrdersListingPage() {
                     <Flex gap={rem(10)} justify={"center"}>
                         <Tooltip label="View">
                             <IconEye
-                                onClick={() => navigate(`/orders/${item.id}`)}
+                                onClick={() =>
+                                    navigate(`/products/${item.product.id}`)
+                                }
                                 cursor={"pointer"}
                             />
                         </Tooltip>
@@ -120,8 +143,10 @@ export default function OrdersListingPage() {
                     <Table.Thead>
                         <Table.Tr>
                             <Table.Th>Name</Table.Th>
-                            <Table.Th>Price</Table.Th>
-                            <Table.Th>Brand</Table.Th>
+                            <Table.Th>Quantity</Table.Th>
+                            <Table.Th>Unit Price</Table.Th>
+                            <Table.Th>Tax Amount</Table.Th>
+                            <Table.Th>Total</Table.Th>
                             <Table.Th>Category</Table.Th>
                             <Table.Th>Status</Table.Th>
                             <Table.Th>Action</Table.Th>
@@ -139,17 +164,36 @@ export default function OrdersListingPage() {
                 title="Update Order Status"
             >
                 <Flex direction="column" gap={rem(15)}>
-                    <Text>Price: ${activeProduct?.price} </Text>
+                    <Text>Name: {activeProduct?.product.slug} </Text>
 
                     <Flex gap={rem(10)}>
                         <Text>status:</Text>
                         <Select
-                            data={["BOOKED", "DELIVERED", "SHIPPED"]}
+                            value={productLineStatus}
+                            data={[
+                                "PENDING",
+                                "PROCESSING",
+                                "SHIPPED",
+                                "DELIVERED",
+                                "CANCELLED",
+                                "RETURN_REQUEST",
+                                "RETURN_PROCESSING",
+                                "RETURNED",
+                            ]}
+                            allowDeselect={false}
+                            onChange={(e) => {
+                                if (e) {
+                                    setProductLineStatus(e as ORDER_STATUS);
+                                }
+                            }}
                         ></Select>
                     </Flex>
 
                     <Flex justify={"flex-end"}>
-                        <Button> UPDATE STATUS </Button>
+                        <Button onClick={updateProductOrderLineStatus}>
+                            {" "}
+                            UPDATE STATUS{" "}
+                        </Button>
                     </Flex>
                 </Flex>
             </Modal>
