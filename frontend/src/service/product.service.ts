@@ -57,7 +57,7 @@ class ProductService implements Service<Product, Product, number> {
                 id.toString()
             ),
             data: {
-                product_status: status,
+                productStatus: status,
             },
         });
     }

@@ -62,11 +62,9 @@ export default function ProductsListingPage() {
     const updateProductStatus = () => {
         if (activeProduct && productStatus) {
             productService
-                .patch(activeProduct.id, {
-                    ...activeProduct,
-                    status: productStatus,
-                })
+                .patchProductStatus(activeProduct.id, productStatus)
                 .then((d) => {
+                    activeProduct.status = productStatus;
                     closeStatusChangeModal();
                 });
         }
