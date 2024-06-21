@@ -21,6 +21,8 @@ import {
     IconPlus,
 } from "@tabler/icons-react";
 import classes from "./exploreSidebarComponent.module.css";
+import { ProductFilterParam } from "../../../../service/product.service";
+import React, { useState } from "react";
 
 const links = [
     { icon: IconBulb, label: "Activity", notifications: 3 },
@@ -40,9 +42,17 @@ const collections = [
     { emoji: "💁‍♀️", label: "Customers" },
 ];
 
-export default function ExploreSidebarComponent() {
+interface ExploreSidebarComponentProps {
+    filterHandler: (p: Partial<ProductFilterParam>) => Promise<void>;
+}
+
+const ExploreSidebarComponent: React.FC<ExploreSidebarComponentProps> = ({
+    filterHandler,
+}) => {
     const queryParams = new URLSearchParams(window.location.search);
     const searchTerm = queryParams.get("query");
+    const [minPrice, setMinPrice] = useState(0);
+    const [maxPrice, setMaxPrice] = useState(9999);
 
     const mainLinks = links.map((link) => (
         <UnstyledButton key={link.label} className={classes.mainLink}>
@@ -80,6 +90,30 @@ export default function ExploreSidebarComponent() {
         </a>
     ));
 
+    const callFilterHandler = () => {
+        let queryParams = {};
+        if (searchTerm)
+            queryParams = {
+                ...queryParams,
+                name: searchTerm,
+            };
+
+        if (minPrice)
+            queryParams = {
+                ...queryParams,
+                minPrice: minPrice,
+            };
+
+        if (maxPrice)
+            queryParams = {
+                ...queryParams,
+                maxPrice: maxPrice,
+            };
+
+        console.table('in');
+        filterHandler(queryParams);
+    };
+
     return (
         <nav className={classes.navbar}>
             {searchTerm && (
@@ -105,8 +139,15 @@ export default function ExploreSidebarComponent() {
                     Price range
                 </Text>
                 <RangeSlider
+                    min={0}
+                    max={20000}
+                    defaultValue={[minPrice, maxPrice]}
+                    onChange={(e) => {
+                        setMinPrice(e[0]);
+                        setMaxPrice(e[1]);
+                    }}
+                    onChangeEnd={callFilterHandler}
                     labelAlwaysOn
-                    defaultValue={[20, 60]}
                     classNames={classes}
                 />
             </div>
@@ -140,4 +181,6 @@ export default function ExploreSidebarComponent() {
             </div>
         </nav>
     );
-}
+};
+
+export default ExploreSidebarComponent;

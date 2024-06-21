@@ -75,6 +75,7 @@ export function ProductCard(props: { data: Product }) {
 
     return (
         <Card withBorder radius="md" p="md" className={classes.card}>
+            <div  className={classes.productImageContainer}>
             {images.length > 0 && (
                 <Card.Section>
                     <Image
@@ -84,9 +85,12 @@ export function ProductCard(props: { data: Product }) {
                         }
                         alt={title}
                         height={180}
+                        style={{objectFit: "contain"}}
+                       
                     />
                 </Card.Section>
             )}
+            </div>
 
             <Card.Section className={classes.section} mt="md">
                 <Group justify="apart">

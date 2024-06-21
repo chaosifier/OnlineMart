@@ -1,21 +1,28 @@
 import ProductsExploreComponent from "../exploreList/productsExploreComponent";
 import classes from "./productsExplorePage.module.css";
 import ExploreSidebarComponent from "./sideBar/exploreSidebarComponent";
-import { productService } from "../../../service/product.service";
+import {
+    ProductFilterParam,
+    productService,
+} from "../../../service/product.service";
 import { useCallback, useEffect, useState } from "react";
 import { Product } from "../../../types/product";
 import { Container } from "@mantine/core";
 
 export default function ProductsExplorePage() {
-    const [data, setData] = useState(new Array<Product>());
+    const [data, setData] = useState<Array<Product> | null>(null);
 
-    const fetchData = useCallback(async () => {
-        let res = await productService.getAll();
+    const handleFilter = async (params: Partial<ProductFilterParam>) => {
+        let res = await productService.filter(params);
         if (res.success) {
             setData(res.data as Array<Product>);
         } else {
-            console.log({ res })(res.message);
+            console.log(res);
         }
+    };
+
+    const fetchData = useCallback(async () => {
+        await handleFilter({});
     }, []);
 
     useEffect(() => {
@@ -24,7 +31,7 @@ export default function ProductsExplorePage() {
 
     return (
         <div className={classes.wrapper}>
-            <ExploreSidebarComponent />
+            <ExploreSidebarComponent filterHandler={handleFilter} />
             <Container fluid>
                 <ProductsExploreComponent data={data} />
             </Container>
