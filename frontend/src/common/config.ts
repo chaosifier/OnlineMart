@@ -112,23 +112,23 @@ export const endpoints = {
             },
             category: {
                 add: {
-                    url: "/categories",
+                    url: "/category",
                     method: "POST",
                 },
                 getSingle: {
-                    url: "/categories/{id}",
+                    url: "/category/{id}",
                     method: "GET",
                 },
                 getAll: {
-                    url: "/categories",
+                    url: "/category",
                     method: "GET",
                 },
                 update: {
-                    url: "/categories/{id}",
+                    url: "/category/{id}",
                     method: "PATCH",
                 },
                 delete: {
-                    url: "/categories/{id}",
+                    url: "/category/{id}",
                     method: "DELETE",
                 },
             },

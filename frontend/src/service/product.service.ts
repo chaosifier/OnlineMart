@@ -11,6 +11,15 @@ class ProductService implements Service<Product, Product, number> {
             data: data,
         });
     }
+
+    async createProduct(
+        data: Partial<Product>
+    ): Promise<GenericResponse<Partial<Product>>> {
+        return await Backend.applyAuthenticated<Product>({
+            ...endpoints.backendService.endpoints.product.add,
+            data: data,
+        });
+    }
     async getAll(): Promise<GenericResponse<Partial<Product>[]>> {
         return await Backend.apply<Product[]>({
             ...endpoints.backendService.endpoints.product.getAll,
