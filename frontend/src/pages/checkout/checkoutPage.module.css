@@ -1,0 +1,25 @@
+.input {
+    background-color: var(--mantine-color-white);
+    border-color: var(--mantine-color-gray-4);
+    color: var(--mantine-color-black);
+
+    &::placeholder {
+        color: var(--mantine-color-gray-5);
+    }
+}
+
+.inputLabel {
+    width: 350px;
+    color: var(--mantine-color-black);
+}
+
+.control {
+    background-color: var(--mantine-color-blue-6);
+}
+
+.form {
+    background-color: var(--mantine-color-white);
+    padding: var(--mantine-spacing-xl);
+    border-radius: var(--mantine-radius-md);
+    box-shadow: var(--mantine-shadow-lg);
+}

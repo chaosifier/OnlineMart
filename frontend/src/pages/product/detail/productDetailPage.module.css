@@ -1,0 +1,28 @@
+.carousel {
+    @mixin hover {
+        .carouselControls {
+            opacity: 1;
+        }
+    }
+}
+
+.carouselControls {
+    transition: opacity 150ms ease;
+    opacity: 0;
+}
+
+.carouselIndicator {
+    width: rem(4px);
+    height: rem(4px);
+    transition: width 250ms ease;
+
+    &[data-active] {
+        width: rem(16px);
+    }
+}
+
+.like {
+    color: var(--mantine-color-red-6);
+    width: rem(20px);
+    height: rem(20px);
+}

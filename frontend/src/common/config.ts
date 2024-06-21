@@ -4,12 +4,18 @@ export const endpoints = {
     backendService: {
         url: backendServiceBaseUrl,
         endpoints: {
-            product: {
-                getAll: {
-                    url: "/products",
-                    method: "GET",
+            user: {
+                register: {
+                    url: "/register",
+                    method: "POST",
                 },
-                addPost: {
+                login: {
+                    url: "/login",
+                    method: "POST",
+                },
+            },
+            product: {
+                add: {
                     url: "/products",
                     method: "POST",
                 },
@@ -17,13 +23,63 @@ export const endpoints = {
                     url: "/products/{id}",
                     method: "GET",
                 },
-                deletePost: {
+                getAll: {
+                    url: "/products",
+                    method: "GET",
+                },
+                update: {
+                    url: "/products/{id}",
+                    method: "POST",
+                },
+                delete: {
                     url: "/products/{id}",
                     method: "DELETE",
                 },
-                updatePost: {
-                    url: "/products/{id}",
+            },
+            role: {
+                getSingle: {
+                    url: "/roles/{id}",
+                    method: "GET",
+                },
+                getAll: {
+                    url: "/roles",
+                    method: "GET",
+                },
+            },
+            brand: {
+                add: {
+                    url: "/brands",
+                    method: "POST",
+                },
+                getSingle: {
+                    url: "/brands/{id}",
+                    method: "GET",
+                },
+                getAll: {
+                    url: "/brands",
+                    method: "GET",
+                },
+            },
+            category: {
+                add: {
+                    url: "/categories",
+                    method: "POST",
+                },
+                getSingle: {
+                    url: "/categories/{id}",
+                    method: "GET",
+                },
+                getAll: {
+                    url: "/categories",
+                    method: "GET",
+                },
+                update: {
+                    url: "/categories/{id}",
                     method: "PATCH",
+                },
+                delete: {
+                    url: "/categories/{id}",
+                    method: "DELETE",
                 },
             },
         },
