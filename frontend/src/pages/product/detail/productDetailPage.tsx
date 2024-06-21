@@ -22,10 +22,7 @@ import "@mantine/carousel/styles.css";
 import { IconShoppingCart, IconShoppingCartFilled } from "@tabler/icons-react";
 import { imageCdnBaseUrl } from "../../../common/config";
 import { cartService } from "../../../service/cart.service";
-import {
-    CartSessionContext,
-    initializeCart,
-} from "../../../context/cart";
+import { CartSessionContext, initializeCart } from "../../../context/cart";
 import { UserSessionContext } from "../../../context/UserSession";
 import { Cart, CartItem } from "../../../types/cart";
 
@@ -52,7 +49,7 @@ export default function ProductDetailPage() {
         </Badge>
     ));
 
-    const handleAddToCart = async (prodId: number, checkout: boolean) => {
+    const addRemoveFromCart = async (prodId: number, checkout: boolean) => {
         if (isLoggedIn) {
             let resp = cartItem
                 ? await cartService.removeFromCart(cartItem.id)
@@ -74,18 +71,20 @@ export default function ProductDetailPage() {
     };
 
     const getExistingCartItem = () => {
-        return cart?.items.find((c) => c.product.id === data?.id);
+        return cart?.items?.find((c) => c.product.id === data?.id);
     };
+
+    useEffect(() => {
+        let existingItm = getExistingCartItem();
+        console.log(existingItm);
+        setCartItem(existingItm);
+    }, [cart]);
 
     const fetchData = useCallback(async () => {
         if (id) {
             let res = await productService.get(Number.parseInt(id));
             if (res.success) {
                 setData(res.data as Product);
-
-                let existingItm = getExistingCartItem();
-                console.log(existingItm);
-                setCartItem(existingItm);
             } else {
                 console.log(res);
             }
@@ -183,14 +182,14 @@ export default function ProductDetailPage() {
                                         radius="xl"
                                         style={{ flex: 1 }}
                                         onClick={() =>
-                                            handleAddToCart(data.id, true)
+                                            addRemoveFromCart(data.id, true)
                                         }
                                     >
                                         Buy now
                                     </Button>
                                     <ActionIcon
                                         onClick={() =>
-                                            handleAddToCart(data.id, false)
+                                            addRemoveFromCart(data.id, false)
                                         }
                                         variant="default"
                                         radius="md"
