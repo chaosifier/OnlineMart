@@ -6,6 +6,7 @@ import {
     Text,
     rem,
     Title,
+    Badge,
 } from "@mantine/core";
 import { IconShoppingBag, IconBuildingStore } from "@tabler/icons-react";
 import { Outlet, useNavigate } from "react-router-dom";
@@ -21,7 +22,7 @@ import classes from "./CustomerLayout.module.css";
 
 const CustomerLayout = () => {
     const { isLoggedIn, user } = useContext(UserSessionContext);
-    const { dispatch } = useContext(CartSessionContext);
+    const { dispatch, cart } = useContext(CartSessionContext);
 
     useEffect(() => {
         if (isLoggedIn) {
@@ -77,11 +78,31 @@ const CustomerLayout = () => {
                             )}
 
                             <UnstyledButton onClick={goToCart}>
-                                <Group gap={rem(5)}>
+                                <Group
+                                    gap={rem(5)}
+                                    style={{ position: "relative" }}
+                                >
                                     <IconShoppingBag radius="xl" size={35} />
-                                    <Text fw={500} size="sm" lh={1} mr={3}>
+                                    {/* <Text fw={500} size="sm" lh={1} mr={3}>
                                         Cart
-                                    </Text>
+                                    </Text> */}
+                                    {isLoggedIn && (
+                                        <Badge
+                                            size="sm"
+                                            variant="filled"
+                                            color="red"
+                                            style={{
+                                                position: "absolute",
+                                                top: -5,
+                                                right: -10,
+                                                width: rem(25),
+                                                height: rem(25),
+                                                pointerEvents: "none",
+                                            }}
+                                        >
+                                            {cart?.items?.length}
+                                        </Badge>
+                                    )}
                                 </Group>
                             </UnstyledButton>
                             {!isLoggedIn && (
