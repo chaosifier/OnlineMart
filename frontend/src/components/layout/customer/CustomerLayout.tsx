@@ -86,23 +86,25 @@ const CustomerLayout = () => {
                                     {/* <Text fw={500} size="sm" lh={1} mr={3}>
                                         Cart
                                     </Text> */}
-                                    {isLoggedIn && (
-                                        <Badge
-                                            size="sm"
-                                            variant="filled"
-                                            color="red"
-                                            style={{
-                                                position: "absolute",
-                                                top: -5,
-                                                right: -10,
-                                                width: rem(25),
-                                                height: rem(25),
-                                                pointerEvents: "none",
-                                            }}
-                                        >
-                                            {cart?.items?.length}
-                                        </Badge>
-                                    )}
+                                    {isLoggedIn &&
+                                        cart &&
+                                        cart.items?.length > 0 && (
+                                            <Badge
+                                                size="sm"
+                                                variant="filled"
+                                                color="red"
+                                                style={{
+                                                    position: "absolute",
+                                                    top: -5,
+                                                    right: -10,
+                                                    width: rem(25),
+                                                    height: rem(25),
+                                                    pointerEvents: "none",
+                                                }}
+                                            >
+                                                {cart.items.length}
+                                            </Badge>
+                                        )}
                                 </Group>
                             </UnstyledButton>
                             {!isLoggedIn && (

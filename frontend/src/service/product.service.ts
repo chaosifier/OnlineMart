@@ -1,6 +1,6 @@
 import { Backend } from "../common/http";
 import { Service } from "../common/service";
-import { Product } from "../types/product";
+import { Product, STATUS } from "../types/product";
 import { GenericResponse } from "../types/response";
 import { endpoints } from "../common/config";
 
@@ -43,6 +43,22 @@ class ProductService implements Service<Product, Product, number> {
                 id.toString()
             ),
             data,
+        });
+    }
+
+    async patchProductStatus(
+        id: number,
+        status: STATUS
+    ): Promise<GenericResponse<Product>> {
+        return await Backend.applyAuthenticated<Product>({
+            ...endpoints.backendService.endpoints.product.update,
+            url: endpoints.backendService.endpoints.product.update.url.replace(
+                "{id}",
+                id.toString()
+            ),
+            data: {
+                product_status: status,
+            },
         });
     }
 

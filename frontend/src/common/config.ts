@@ -20,6 +20,24 @@ export const endpoints = {
                     method: "GET",
                 },
             },
+            order: {
+                create: {
+                    url: "/orders",
+                    method: "POST",
+                },
+                getSellerOrders: {
+                    url: "/orders/seller",
+                    method: "GET",
+                },
+                getCustomerOrders: {
+                    url: "/orders",
+                    method: "GET",
+                },
+                updateLineItemStatus: {
+                    url: "/orders/line/{id}",
+                    method: "PATCH",
+                },
+            },
             product: {
                 add: {
                     url: "/products",
