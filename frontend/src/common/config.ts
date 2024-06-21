@@ -53,7 +53,7 @@ export const endpoints = {
                 },
                 update: {
                     url: "/products/{id}",
-                    method: "POST",
+                    method: "PUT",
                 },
                 delete: {
                     url: "/products/{id}",
