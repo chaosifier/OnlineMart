@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     Table,
     ScrollArea,
@@ -12,51 +12,22 @@ import {
     Tooltip,
 } from "@mantine/core";
 import Search from "../../../components/common/search";
-import { IconEdit, IconEye, IconTrash } from "@tabler/icons-react";
+import { IconEye, IconTrash } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
-import { ProductBase } from "../../../types/product";
-
-const data: ProductBase[] = [
-    {
-        id: 1,
-        title: "Iphone 14 Pro max",
-        price: 2150,
-        brand: "apple",
-        category: ["electronics", "cellphone"],
-    },
-    {
-        id: 2,
-        title: "Iphone 15 Pro max",
-        price: 2350,
-        brand: "apple",
-        category: ["electronics", "cellphone"],
-    },
-    {
-        id: 3,
-        title: "Iphone 13 Pro max",
-        price: 950,
-        brand: "apple",
-        category: ["electronics", "cellphone"],
-    },
-    {
-        id: 4,
-        title: "Iphone 11 Pro max",
-        price: 950,
-        brand: "apple",
-        category: ["electronics", "cellphone"],
-    },
-    {
-        id: 5,
-        title: "Iphone 13 Pro max",
-        price: 1200,
-        brand: "apple",
-        category: ["electronics", "cellphone"],
-    },
-];
+import { Product } from "../../../types/product";
+import { productService } from "../../../service/product.service";
 
 export default function ProductsListingPage() {
     const [activePage, setPage] = useState(1);
     const navigate = useNavigate();
+
+    const [data, setData] = useState<Product[]>([]);
+
+    useEffect(() => {
+        productService.getMyProducts().then((data) => {
+            setData(data.data as Product[]);
+        });
+    }, []);
 
     const handleProductDeletion = (id: number) => {
         // run delete function
@@ -73,14 +44,12 @@ export default function ProductsListingPage() {
                     </Group>
                 </Table.Td>
                 <Table.Td>${item.price}</Table.Td>
-                <Table.Td>{item.brand}</Table.Td>
+                <Table.Td>{item.brand.name}</Table.Td>
                 <Table.Td>
                     <Group>
-                        {item.category.map((it) => (
-                            <Badge color="orange" variant="light" key={it}>
-                                {it}
-                            </Badge>
-                        ))}
+                        <Badge color="orange" variant="light">
+                            {item.category.title}
+                        </Badge>
                     </Group>
                 </Table.Td>
                 <Table.Td>

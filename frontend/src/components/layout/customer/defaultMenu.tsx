@@ -18,7 +18,7 @@ const DefaultMenu = () => {
     const navigate = useNavigate();
 
     const goToLogin = () => {
-        return navigate("/login");
+        return navigate("/login?client=customer");
     };
 
     const goToRegister = () => {

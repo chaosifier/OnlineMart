@@ -31,7 +31,7 @@ export function ProductCard(props: { data: Product }) {
 
     useEffect(() => {
         let toSet =
-            cart && cart.items.filter((i) => i.product.id === id).length > 0
+            cart && cart.items && cart.items.filter((i) => i.product.id === id).length > 0
                 ? true
                 : false;
         setInCart(toSet);

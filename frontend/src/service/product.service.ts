@@ -6,7 +6,7 @@ import { endpoints } from "../common/config";
 
 class ProductService implements Service<Product, Product, number> {
     async create(data: Product): Promise<GenericResponse<Partial<Product>>> {
-        return await Backend.apply<Product>({
+        return await Backend.applyAuthenticated<Product>({
             ...endpoints.backendService.endpoints.product.add,
             data: data,
         });
@@ -43,6 +43,12 @@ class ProductService implements Service<Product, Product, number> {
                 id.toString()
             ),
             data,
+        });
+    }
+
+    async getMyProducts(): Promise<GenericResponse<Product[]>> {
+        return await Backend.applyAuthenticated<Product[]>({
+            ...endpoints.backendService.endpoints.product.viewMyProducts,
         });
     }
 }
