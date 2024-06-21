@@ -7,11 +7,11 @@ const HomePage = () => {
     const [data, setData] = useState(new Array<Product>());
 
     const fetchData = useCallback(async () => {
-        let res = await productService.getAll();
-        if (res.status) {
+        const res = await productService.getAll();
+        if (res.success) {
             setData(res.data as Array<Product>);
         } else {
-            alert(res.message);
+            console.log({ res });
         }
     }, []);
 

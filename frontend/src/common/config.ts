@@ -1,8 +1,10 @@
 export const backendServiceBaseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
+export const imageCdnBaseUrl = import.meta.env.VITE_IMAGE_CDN_URL;
 
 export const endpoints = {
     backendService: {
         url: backendServiceBaseUrl,
+        imageCdnUrl: imageCdnBaseUrl,
         endpoints: {
             user: {
                 register: {

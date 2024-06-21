@@ -9,12 +9,12 @@ export default function CategoryMenuComponent() {
     const [catLinks, setCatLinks] = useState<JSX.Element[]>();
     const navigate = useNavigate();
     const fetchData = useCallback(async () => {
-        let res = await categoryService.getAll();
+        const res = await categoryService.getAll();
         if (res.status) {
-            let links = getMenuItems(res.data as Array<Category>);
+            const links = getMenuItems(res.data as Array<Category>);
             setCatLinks(links);
         } else {
-            alert(res.message);
+            console.log({ res });
         }
     }, []);
 

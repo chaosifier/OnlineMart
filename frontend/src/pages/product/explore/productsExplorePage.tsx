@@ -13,7 +13,7 @@ export default function ProductsExplorePage() {
         if (res.status) {
             setData(res.data as Array<Product>);
         } else {
-            alert(res.message);
+            console.log({ res })(res.message);
         }
     }, []);
 

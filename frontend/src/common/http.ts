@@ -23,7 +23,7 @@ export class Backend {
 
     private static axiosInstance = axios.create({
         baseURL: backendServiceBaseUrl,
-        timeout: 3000,
+        // timeout: 3000,
     });
 
     static async apply<D>(

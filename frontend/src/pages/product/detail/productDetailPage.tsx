@@ -57,7 +57,7 @@ export default function ProductDetailPage() {
             if (res.status) {
                 setData(res.data as Product);
             } else {
-                alert(res.message);
+                console.log({ res })(res.message);
             }
         }
     }, [id]);
@@ -124,9 +124,7 @@ export default function ProductDetailPage() {
                                 </Text>
                             </Grid.Col>
                             <Grid.Col span={12}>
-                                <Group mb={15}>
-                                    {features}
-                                </Group>
+                                <Group mb={15}>{features}</Group>
                             </Grid.Col>
                             <Grid.Col span={12}>
                                 <Group gap={30}>
