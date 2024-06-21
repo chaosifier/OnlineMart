@@ -1,6 +1,6 @@
-import { Modal, Select, Title } from "@mantine/core";
+import { Button, Modal, Select } from "@mantine/core";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     Table,
     ScrollArea,
@@ -14,56 +14,26 @@ import {
     Tooltip,
 } from "@mantine/core";
 import Search from "../../../components/common/search";
-import { IconEdit, IconEye, IconTrash, IconPencil } from "@tabler/icons-react";
+import { IconEye, IconPencil } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
-import { ProductBase } from "../../../types/product";
+import { Product, ProductBase } from "../../../types/product";
 import { useDisclosure } from "@mantine/hooks";
-
-const data: ProductBase[] = [
-    {
-        id: 1,
-        title: "Iphone 14 Pro max",
-        price: 2150,
-        brand: "apple",
-        category: ["electronics", "cellphone"],
-    },
-    {
-        id: 2,
-        title: "Iphone 15 Pro max",
-        price: 2350,
-        brand: "apple",
-        category: ["electronics", "cellphone"],
-    },
-    {
-        id: 3,
-        title: "Iphone 13 Pro max",
-        price: 950,
-        brand: "apple",
-        category: ["electronics", "cellphone"],
-    },
-    {
-        id: 4,
-        title: "Iphone 11 Pro max",
-        price: 950,
-        brand: "apple",
-        category: ["electronics", "cellphone"],
-    },
-    {
-        id: 5,
-        title: "Iphone 13 Pro max",
-        price: 1200,
-        brand: "apple",
-        category: ["electronics", "cellphone"],
-    },
-];
+import { productService } from "../../../service/product.service";
 
 export default function OrdersListingPage() {
     const [activePage, setPage] = useState(1);
     const [opened, { open, close }] = useDisclosure(false);
+    const [data, setData] = useState<Product[]>([]);
     const [activeProduct, setActiveProduct] = useState<null | ProductBase>(
         null
     );
     const navigate = useNavigate();
+
+    useEffect(() => {
+        productService.getMyProducts().then((data) => {
+            setData(data.data as Product[]);
+        });
+    }, []);
 
     const openStatusChangeModal = (id: number) => {
         const prod = data.filter((i) => i.id === id)[0];
@@ -87,14 +57,12 @@ export default function OrdersListingPage() {
                     </Group>
                 </Table.Td>
                 <Table.Td>${item.price}</Table.Td>
-                <Table.Td>{item.brand}</Table.Td>
+                <Table.Td>{item.brand.name}</Table.Td>
                 <Table.Td>
                     <Group>
-                        {item.category.map((it) => (
-                            <Badge color="orange" variant="light" key={it}>
-                                {it}
-                            </Badge>
-                        ))}
+                        <Badge color="orange" variant="light">
+                            {item.category.slug}
+                        </Badge>
                     </Group>
                 </Table.Td>
                 <Table.Td>
@@ -170,13 +138,20 @@ export default function OrdersListingPage() {
                 onClose={closeStatusChangeModal}
                 title="Update Order Status"
             >
-                <span>Price: ${activeProduct?.price} </span>
-                <br />
-                <span>
-                    status:
-                    <Select data={["BOOKED", "DELIVERED", "SHIPPED"]}></Select>
-                </span>
-                {/* Modal content */}
+                <Flex direction="column" gap={rem(15)}>
+                    <Text>Price: ${activeProduct?.price} </Text>
+
+                    <Flex gap={rem(10)}>
+                        <Text>status:</Text>
+                        <Select
+                            data={["BOOKED", "DELIVERED", "SHIPPED"]}
+                        ></Select>
+                    </Flex>
+
+                    <Flex justify={"flex-end"}>
+                        <Button> UPDATE STATUS </Button>
+                    </Flex>
+                </Flex>
             </Modal>
         </Container>
     );
