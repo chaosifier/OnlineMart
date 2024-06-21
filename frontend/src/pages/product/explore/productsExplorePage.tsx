@@ -10,7 +10,7 @@ export default function ProductsExplorePage() {
 
     const fetchData = useCallback(async () => {
         let res = await productService.getAll();
-        if (res.status) {
+        if (res.success) {
             setData(res.data as Array<Product>);
         } else {
             console.log({ res })(res.message);

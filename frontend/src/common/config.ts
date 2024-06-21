@@ -87,6 +87,10 @@ export const endpoints = {
                     url: "/cart/items",
                     method: "DELETE",
                 },
+                checkout: {
+                    url: "/order",
+                    method: "POST",
+                },
             },
             category: {
                 add: {

@@ -7,29 +7,36 @@ import {
     Text,
     Stack,
     SimpleGrid,
-    Title,
     TextInput,
-    Center,
-    Flex,
-    Divider,
     Card,
-    Grid,
-    UnstyledButton,
 } from "@mantine/core";
-import { ProductCard } from "../product/card/productCard";
-import { Product } from "../../types/product";
 import classes from "./checkoutPage.module.css";
-import { CartSessionContext } from "../../context/cart";
+import { CartSessionContext, initializeCart } from "../../context/cart";
 import { CartItemCard } from "../cart/card/cartItemCard";
 import { UserSessionContext } from "../../context/UserSession";
+import { cartService } from "../../service/cart.service";
+import { Cart } from "../../types/cart";
 
 export default function CheckoutPage() {
     const { cart, dispatch } = useContext(CartSessionContext);
     const [active, setActive] = useState(0);
     const [selectedPaymentId, setSelectedPaymentId] = useState(0);
     const { user } = useContext(UserSessionContext);
-    const nextStep = () =>
-        setActive((current) => (current < 4 ? current + 1 : current));
+    const nextStep = async () => {
+        if (active === 3) {
+            let resp = await cartService.checkout();
+            if (resp.success) {
+                setActive(4);
+                cartService.getCartItems().then((data) => {
+                    initializeCart(dispatch!, { cart: data.data as Cart });
+                });
+            } else {
+                console.log("checkout failed");
+            }
+        } else {
+            setActive((current) => (current < 4 ? current + 1 : current));
+        }
+    };
     const prevStep = () =>
         setActive((current) => (current > 0 ? current - 1 : current));
 
@@ -82,7 +89,7 @@ export default function CheckoutPage() {
                                 <TextInput
                                     label="Email"
                                     placeholder="Enter email"
-                                    value={user?.email}
+                                    defaultValue={user?.email}
                                     required
                                     classNames={{
                                         input: classes.input,
@@ -92,7 +99,7 @@ export default function CheckoutPage() {
                                 <TextInput
                                     label="First name"
                                     placeholder="Enter first name"
-                                    value={user?.firstName}
+                                    defaultValue={user?.firstName}
                                     mt="md"
                                     classNames={{
                                         input: classes.input,
@@ -102,7 +109,7 @@ export default function CheckoutPage() {
                                 <TextInput
                                     label="Last name"
                                     placeholder="Enter last name"
-                                    value={user?.lastName}
+                                    defaultValue={user?.lastName}
                                     mt="md"
                                     classNames={{
                                         input: classes.input,
