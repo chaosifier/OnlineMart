@@ -20,34 +20,36 @@ import {
     // addItemToCart,
 } from "../../../context/cart";
 import { UserSessionContext } from "../../../context/UserSession";
-import { Cart } from "../../../types/cart";
+import { Cart, CartItem } from "../../../types/cart";
 
 export function ProductCard(props: { data: Product }) {
     const { isLoggedIn } = useContext(UserSessionContext);
     const navigate = useNavigate();
-    const { id, images, title, description, category } = props.data;
+    const { id, images, title, description, category, price } = props.data;
     const { cart, dispatch } = useContext(CartSessionContext);
     const [inCart, setInCart] = useState(false);
+    const [cartItem, setCartItem] = useState<CartItem | null>();
 
     useEffect(() => {
         let toSet =
-            cart && cart.items && cart.items.filter((i) => i.product.id === id).length > 0
+            cart &&
+            cart.items &&
+            cart.items.filter((i) => i.product.id === id).length > 0
                 ? true
                 : false;
         setInCart(toSet);
         console.log(toSet, "toSet");
     }, [cart]);
 
-    const handleAddToCart = async (prodId: number) => {
+    const addRemoveFromCart = async (prodId: number) => {
         if (isLoggedIn) {
-            let resp = inCart
-                ? await cartService.removeFromCart(id)
+            let resp = cartItem
+                ? await cartService.removeFromCart(cartItem.id)
                 : await cartService.addToCart({
                       productId: prodId,
                       quantity: 1,
                   });
             if (resp.success) {
-                // setInCart(true);
                 initializeCart(dispatch!, { cart: resp.data as Cart });
             } else {
                 console.log("failure", resp);
@@ -56,6 +58,16 @@ export function ProductCard(props: { data: Product }) {
             navigate("/login");
         }
     };
+
+    const getExistingCartItem = () => {
+        return cart?.items?.find((c) => c.product.id === id);
+    };
+
+    useEffect(() => {
+        let existingItm = getExistingCartItem();
+        console.log(existingItm);
+        setCartItem(existingItm);
+    }, [cart]);
 
     const handleProductClick = () => {
         navigate(`/products/${id}`);
@@ -85,8 +97,9 @@ export function ProductCard(props: { data: Product }) {
                         {category.title}
                     </Badge>
                 </Group>
-                <Text fz="sm" mt="xs">
-                    {description}
+                <Text fz="sm">{description}</Text>
+                <Text fz="md" fw={500}>
+                    Price: ${price}
                 </Text>
             </Card.Section>
 
@@ -99,7 +112,7 @@ export function ProductCard(props: { data: Product }) {
                     Show details
                 </Button>
                 <ActionIcon
-                    onClick={() => handleAddToCart(id)}
+                    onClick={() => addRemoveFromCart(id)}
                     variant="default"
                     radius="md"
                     size={36}

@@ -7,29 +7,40 @@ import {
     Text,
     Stack,
     SimpleGrid,
-    Title,
     TextInput,
-    Center,
-    Flex,
-    Divider,
     Card,
-    Grid,
-    UnstyledButton,
+    Divider,
 } from "@mantine/core";
-import { ProductCard } from "../product/card/productCard";
-import { Product } from "../../types/product";
 import classes from "./checkoutPage.module.css";
-import { CartSessionContext } from "../../context/cart";
+import { CartSessionContext, initializeCart } from "../../context/cart";
 import { CartItemCard } from "../cart/card/cartItemCard";
 import { UserSessionContext } from "../../context/UserSession";
+import { cartService } from "../../service/cart.service";
+import { Cart } from "../../types/cart";
 
 export default function CheckoutPage() {
     const { cart, dispatch } = useContext(CartSessionContext);
     const [active, setActive] = useState(0);
     const [selectedPaymentId, setSelectedPaymentId] = useState(0);
     const { user } = useContext(UserSessionContext);
-    const nextStep = () =>
-        setActive((current) => (current < 4 ? current + 1 : current));
+    const [orderPlaced, setOrderPlaced] = useState(false);
+
+    const nextStep = async () => {
+        if (active === 3) {
+            let resp = await cartService.checkout();
+            if (resp.success) {
+                setActive(4);
+                cartService.getCartItems().then((data) => {
+                    initializeCart(dispatch!, { cart: data.data as Cart });
+                });
+                setOrderPlaced(true);
+            } else {
+                console.log("checkout failed");
+            }
+        } else if (active < 3) {
+            setActive((current) => (current < 4 ? current + 1 : current));
+        }
+    };
     const prevStep = () =>
         setActive((current) => (current > 0 ? current - 1 : current));
 
@@ -55,9 +66,13 @@ export default function CheckoutPage() {
     ];
 
     return (
-        <Container>
+        <Container pt={15}>
             <Stepper active={active} onStepClick={setActive}>
-                <Stepper.Step label="Review" description="Review products">
+                <Stepper.Step
+                    label="Review"
+                    description="Review products"
+                    allowStepSelect={!orderPlaced}
+                >
                     <Container p={15}>
                         <Text mb={15}>
                             Please review the products you're checking out:
@@ -74,6 +89,7 @@ export default function CheckoutPage() {
                 <Stepper.Step
                     label="Delivery Loation"
                     description="Confirm address"
+                    allowStepSelect={!orderPlaced}
                 >
                     <Container p={15}>
                         <Text mb={15}>Please verify the delivery address:</Text>
@@ -82,7 +98,7 @@ export default function CheckoutPage() {
                                 <TextInput
                                     label="Email"
                                     placeholder="Enter email"
-                                    value={user?.email}
+                                    defaultValue={user?.email}
                                     required
                                     classNames={{
                                         input: classes.input,
@@ -92,7 +108,7 @@ export default function CheckoutPage() {
                                 <TextInput
                                     label="First name"
                                     placeholder="Enter first name"
-                                    value={user?.firstName}
+                                    defaultValue={user?.firstName}
                                     mt="md"
                                     classNames={{
                                         input: classes.input,
@@ -102,7 +118,7 @@ export default function CheckoutPage() {
                                 <TextInput
                                     label="Last name"
                                     placeholder="Enter last name"
-                                    value={user?.lastName}
+                                    defaultValue={user?.lastName}
                                     mt="md"
                                     classNames={{
                                         input: classes.input,
@@ -134,6 +150,7 @@ export default function CheckoutPage() {
                 <Stepper.Step
                     label="Payment"
                     description="Select payment method"
+                    allowStepSelect={!orderPlaced}
                 >
                     <Container p={15}>
                         <Text mb={15}>Select payment method</Text>
@@ -171,17 +188,24 @@ export default function CheckoutPage() {
                         </SimpleGrid>
                     </Container>
                 </Stepper.Step>
-                <Stepper.Step label="Confirm" description="Order summary">
+                <Stepper.Step
+                    label="Confirm"
+                    description="Order summary"
+                    allowStepSelect={!orderPlaced}
+                >
                     <Container p={15}>
                         <Text mb={15}>Please confirm the details below</Text>
                         <Group justify="end">
-                            <Stack justify="end" mb={15}>
-                                <Text size="xl">Total: {cart?.totalPrice}</Text>
+                            <Stack justify="end" mb={15} gap={0}>
                                 <Text size="xl">
-                                    Tax: {cart ? 0.05 * cart.totalPrice : 0}
+                                    Total: ${cart?.totalPrice}
                                 </Text>
+                                <Text size="xl">
+                                    Tax: ${cart ? 0.05 * cart.totalPrice : 0}
+                                </Text>
+                                <Divider my="sm" />
                                 <Text size="xl" fw={700}>
-                                    Grand Total:{" "}
+                                    Grand Total: $
                                     {cart
                                         ? 0.05 * cart.totalPrice +
                                           cart.totalPrice
@@ -192,11 +216,16 @@ export default function CheckoutPage() {
                     </Container>
                 </Stepper.Step>
                 <Stepper.Completed>
-                    <Group justify="center">
-                        <Text size="lg" mt={40}>
-                            Order completed. Thank you for shopping with us!
-                        </Text>
-                    </Group>
+                    <Stack>
+                        <Group justify="center">
+                            <Text size="lg" mt={40}>
+                                Order placed, please check your email.
+                            </Text>
+                        </Group>
+                        <Group justify="center">
+                            <Text>Thank you for shopping with us!</Text>
+                        </Group>
+                    </Stack>
                 </Stepper.Completed>
             </Stepper>
 

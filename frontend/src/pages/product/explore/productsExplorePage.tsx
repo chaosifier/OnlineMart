@@ -4,13 +4,14 @@ import ExploreSidebarComponent from "./sideBar/exploreSidebarComponent";
 import { productService } from "../../../service/product.service";
 import { useCallback, useEffect, useState } from "react";
 import { Product } from "../../../types/product";
+import { Container } from "@mantine/core";
 
 export default function ProductsExplorePage() {
     const [data, setData] = useState(new Array<Product>());
 
     const fetchData = useCallback(async () => {
         let res = await productService.getAll();
-        if (res.status) {
+        if (res.success) {
             setData(res.data as Array<Product>);
         } else {
             console.log({ res })(res.message);
@@ -24,7 +25,9 @@ export default function ProductsExplorePage() {
     return (
         <div className={classes.wrapper}>
             <ExploreSidebarComponent />
-            <ProductsExploreComponent data={data} />
+            <Container fluid>
+                <ProductsExploreComponent data={data} />
+            </Container>
         </div>
     );
 }

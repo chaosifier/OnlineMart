@@ -59,7 +59,7 @@ const CustomerLayout = () => {
     return (
         <>
             <header className={classes.header}>
-                <Container className={classes.mainSection} size="md">
+                <Container className={classes.mainSection} size="md" fluid>
                     <Group justify="space-around">
                         <UnstyledButton>
                             <Title onClick={goToHome}>Online Mart</Title>

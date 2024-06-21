@@ -105,6 +105,10 @@ export const endpoints = {
                     url: "/cart/items",
                     method: "DELETE",
                 },
+                checkout: {
+                    url: "/orders",
+                    method: "POST",
+                },
             },
             category: {
                 add: {

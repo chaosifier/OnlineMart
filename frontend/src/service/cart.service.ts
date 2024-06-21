@@ -3,8 +3,14 @@ import { Service } from "../common/service";
 import { Cart } from "../types/cart";
 import { GenericResponse } from "../types/response";
 import { endpoints } from "../common/config";
+import { OrderBase } from "../types/order";
 
 class CartService implements Service<Cart, Cart, number> {
+    async checkout(): Promise<GenericResponse<Partial<OrderBase>>>{
+        return await Backend.applyAuthenticated({
+            ...endpoints.backendService.endpoints.cart.checkout
+        });
+    }
     create(data: Cart): Promise<GenericResponse<Partial<Cart>>> {
         throw new Error("Method not implemented.");
     }

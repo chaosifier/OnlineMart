@@ -13,7 +13,7 @@ import {
     Flex,
     rem,
 } from "@mantine/core";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Form, useNavigate, useSearchParams } from "react-router-dom";
 import classes from "./loginPage.module.css";
 import { userService } from "../../service/user.service";
 import { useContext, useEffect, useState } from "react";
@@ -102,66 +102,70 @@ export default function LoginPage() {
                 Login to Online Mart!
             </Title>
             <Paper withBorder shadow="md" p={30} radius="md" mt="xl">
-                <Stack>
-                    <TextInput
-                        label="Email"
-                        placeholder="Enter email"
-                        value={form.values.email}
-                        radius="md"
-                        key={form.key("email")}
-                        {...form.getInputProps("email")}
+                <Form onSubmit={handleSubmit}>
+                    <Stack>
+                        <TextInput
+                            label="Email"
+                            placeholder="Enter email"
+                            value={form.values.email}
+                            radius="md"
+                            key={form.key("email")}
+                            {...form.getInputProps("email")}
+                        />
+
+                        <PasswordInput
+                            label="Password"
+                            placeholder="Your password"
+                            value={form.values.password}
+                            radius="md"
+                            key={form.key("password")}
+                            {...form.getInputProps("password")}
+                        />
+                    </Stack>
+
+                    <SegmentedControl
+                        radius="xl"
+                        size="md"
+                        mt={20}
+                        defaultValue={searchParams.get("client") ?? "customer"}
+                        data={[
+                            {
+                                value: "customer",
+                                label: "Login as Customer",
+                            },
+                            { value: "seller", label: "Login as Seller" },
+                        ]}
+                        classNames={classes}
+                        onChange={(data) => {
+                            setSearchParams(`client=${data}`);
+                        }}
                     />
 
-                    <PasswordInput
-                        label="Password"
-                        placeholder="Your password"
-                        value={form.values.password}
-                        radius="md"
-                        key={form.key("password")}
-                        {...form.getInputProps("password")}
-                    />
-                </Stack>
+                    {loginError && (
+                        <Flex justify={"center"} mt={rem(10)}>
+                            <span
+                                style={{ color: "var(--mantine-color-error)" }}
+                            >
+                                Invalid Credentials
+                            </span>
+                        </Flex>
+                    )}
 
-                <SegmentedControl
-                    radius="xl"
-                    size="md"
-                    mt={20}
-                    defaultValue={searchParams.get("client") ?? "customer"}
-                    data={[
-                        {
-                            value: "customer",
-                            label: "Login as Customer",
-                        },
-                        { value: "seller", label: "Login as Seller" },
-                    ]}
-                    classNames={classes}
-                    onChange={(data) => {
-                        setSearchParams(`client=${data}`);
-                    }}
-                />
-
-                {loginError && (
-                    <Flex justify={"center"} mt={rem(10)}>
-                        <span style={{ color: "var(--mantine-color-error)" }}>
-                            Invalid Credentials
-                        </span>
-                    </Flex>
-                )}
-
-                <Group justify="space-between" mt="md">
-                    <Anchor
-                        component="button"
-                        type="button"
-                        c="dimmed"
-                        onClick={goToRegister}
-                        size="xs"
-                    >
-                        Don't have an account? Register
-                    </Anchor>
-                    <Button onClick={handleSubmit} radius="xl">
-                        LOGIN
-                    </Button>
-                </Group>
+                    <Group justify="space-between" mt="md">
+                        <Anchor
+                            component="button"
+                            type="button"
+                            c="dimmed"
+                            onClick={goToRegister}
+                            size="xs"
+                        >
+                            Don't have an account? Register
+                        </Anchor>
+                        <Button type="submit" radius="xl">
+                            LOGIN
+                        </Button>
+                    </Group>
+                </Form>
             </Paper>
         </Container>
     );
