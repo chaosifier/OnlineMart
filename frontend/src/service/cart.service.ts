@@ -8,10 +8,22 @@ class CartService implements Service<Cart, Cart, number> {
     create(data: Cart): Promise<GenericResponse<Partial<Cart>>> {
         throw new Error("Method not implemented.");
     }
-    addToCart(data: { id: number; quantity: number }) {
+    addToCart(data: {
+        productId: number;
+        quantity: number;
+    }): Promise<GenericResponse<Partial<Cart>>> {
         return Backend.applyAuthenticated({
             ...endpoints.backendService.endpoints.cart.add,
             data,
+        });
+    }
+    removeFromCart(id: number): Promise<GenericResponse<Partial<Cart>>> {
+        return Backend.applyAuthenticated({
+            ...endpoints.backendService.endpoints.cart.remove,
+            url: endpoints.backendService.endpoints.cart.remove.url.replace(
+                "{id}",
+                id.toString()
+            ),
         });
     }
     getCartItems(): Promise<GenericResponse<Cart>> {

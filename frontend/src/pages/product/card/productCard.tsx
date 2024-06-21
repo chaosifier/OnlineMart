@@ -11,18 +11,50 @@ import {
 import classes from "./productCard.module.css";
 import { Product } from "../../../types/product";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { endpoints } from "../../../common/config";
+import { cartService } from "../../../service/cart.service";
+import {
+    CartSessionContext,
+    initializeCart,
+    // addItemToCart,
+} from "../../../context/cart";
+import { UserSessionContext } from "../../../context/UserSession";
+import { Cart } from "../../../types/cart";
 
 export function ProductCard(props: { data: Product }) {
+    const { isLoggedIn } = useContext(UserSessionContext);
     const navigate = useNavigate();
     const { id, images, title, description, category } = props.data;
-
+    const { cart, dispatch } = useContext(CartSessionContext);
     const [inCart, setInCart] = useState(false);
 
-    const handleAddToCart = () => {
-        console.log("add/remove to/from cart");
-        setInCart(!inCart);
+    useEffect(() => {
+        let toSet =
+            cart && cart.items.filter((i) => i.product.id === id).length > 0
+                ? true
+                : false;
+        setInCart(toSet);
+        console.log(toSet, "toSet");
+    }, [cart]);
+
+    const handleAddToCart = async (prodId: number) => {
+        if (isLoggedIn) {
+            let resp = inCart
+                ? await cartService.removeFromCart(id)
+                : await cartService.addToCart({
+                      productId: prodId,
+                      quantity: 1,
+                  });
+            if (resp.success) {
+                // setInCart(true);
+                initializeCart(dispatch!, { cart: resp.data as Cart });
+            } else {
+                console.log("failure", resp);
+            }
+        } else {
+            navigate("/login");
+        }
     };
 
     const handleProductClick = () => {
@@ -67,7 +99,7 @@ export function ProductCard(props: { data: Product }) {
                     Show details
                 </Button>
                 <ActionIcon
-                    onClick={handleAddToCart}
+                    onClick={() => handleAddToCart(id)}
                     variant="default"
                     radius="md"
                     size={36}
