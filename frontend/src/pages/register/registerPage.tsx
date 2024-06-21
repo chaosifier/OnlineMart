@@ -61,9 +61,9 @@ export default function RegisterPage() {
 
     const goToLogin = () => {
         if (searchParams.get("client") === "seller") {
-            return navigate("/login/seller");
+            return navigate("/login?client=seller");
         }
-        navigate("/login");
+        navigate("/login?client=customer");
     };
 
     return (

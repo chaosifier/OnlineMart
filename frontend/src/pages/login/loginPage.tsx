@@ -9,8 +9,9 @@ import {
     Stack,
     Container,
     Title,
+    SegmentedControl,
 } from "@mantine/core";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import classes from "./loginPage.module.css";
 import { userService } from "../../service/user.service";
 import { useContext, useState } from "react";
@@ -21,7 +22,7 @@ import { UserSessionContext, addUserSession } from "../../context/UserSession";
 
 export default function LoginPage() {
     const [errors, setErrors] = useState<{ [key: string]: Array<string> }>({});
-    const { pathname } = useLocation();
+    const [searchParams, setSearchParams] = useSearchParams();
     const { dispatch, isLoggedIn } = useContext(UserSessionContext);
     const navigate = useNavigate();
 
@@ -29,10 +30,8 @@ export default function LoginPage() {
         navigate("/");
     }
 
-    const isSeller = pathname.includes("/login/seller");
-
     const goToRegister = () => {
-        if (isSeller) {
+        if (searchParams.get("client") === "seller") {
             return navigate("/register?client=seller");
         }
         navigate("/register?client=customer");
@@ -61,7 +60,7 @@ export default function LoginPage() {
             registrationType: "CUSTOMER",
         };
 
-        if (isSeller) {
+        if (searchParams.get("client") === "seller") {
             payload["registrationType"] = "SELLER";
         }
         const resp = await userService.login(payload);
@@ -82,7 +81,7 @@ export default function LoginPage() {
                 (resp.data as LoginResponse).refresh_token
             );
 
-            if (isSeller) {
+            if (searchParams.get("client") === "seller") {
                 navigate("/seller/products");
             } else {
                 navigate("/");
@@ -133,6 +132,23 @@ export default function LoginPage() {
                         />
                         <InputErrors messages={errors["password"]} />
                     </Stack>
+                    <SegmentedControl
+                        radius="xl"
+                        size="md"
+                        mt={20}
+                        defaultValue={searchParams.get("client") ?? "customer"}
+                        data={[
+                            {
+                                value: "customer",
+                                label: "Login as Customer",
+                            },
+                            { value: "seller", label: "Login as Seller" },
+                        ]}
+                        classNames={classes}
+                        onChange={(data) => {
+                            setSearchParams(`client=${data}`);
+                        }}
+                    />
 
                     <Group justify="space-between" mt="xl">
                         <Anchor

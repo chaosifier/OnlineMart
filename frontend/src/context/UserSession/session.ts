@@ -68,4 +68,6 @@ export const removeUserSession = (dispatch: React.Dispatch<Action>) => {
         type: "LOGOUT",
         payload: {},
     });
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
 };

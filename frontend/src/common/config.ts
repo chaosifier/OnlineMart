@@ -41,6 +41,10 @@ export const endpoints = {
                     url: "/products/{id}",
                     method: "DELETE",
                 },
+                viewMyProducts: {
+                    url: "/products/mine",
+                    method: "GET",
+                },
             },
             role: {
                 getSingle: {
