@@ -4,6 +4,7 @@ import ExploreSidebarComponent from "./sideBar/exploreSidebarComponent";
 import { productService } from "../../../service/product.service";
 import { useCallback, useEffect, useState } from "react";
 import { Product } from "../../../types/product";
+import { Container } from "@mantine/core";
 
 export default function ProductsExplorePage() {
     const [data, setData] = useState(new Array<Product>());
@@ -24,7 +25,9 @@ export default function ProductsExplorePage() {
     return (
         <div className={classes.wrapper}>
             <ExploreSidebarComponent />
-            <ProductsExploreComponent data={data} />
+            <Container fluid>
+                <ProductsExploreComponent data={data} />
+            </Container>
         </div>
     );
 }
