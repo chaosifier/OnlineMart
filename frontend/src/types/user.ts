@@ -1,9 +1,15 @@
-export type User = {
-    userId: number;
+import { BaseRole } from "./role";
+
+export type UserBase = {
+    id: number;
     firstName: string;
     lastName: string;
     email: string;
+};
+
+export type User = UserBase & {
     image: string;
+    roles?: BaseRole[];
 };
 
 export type LoginRequest = {
@@ -12,8 +18,9 @@ export type LoginRequest = {
 };
 
 export type LoginResponse = {
-    accessToken: string;
-    roles: string[];
+    access_token: string;
+    refresh_token: string;
+    userData: User;
 };
 
 export type RegisterRequest = {

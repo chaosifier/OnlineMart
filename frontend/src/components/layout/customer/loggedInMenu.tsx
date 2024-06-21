@@ -16,7 +16,7 @@ import {
     IconStar,
     IconTrash,
 } from "@tabler/icons-react";
-import classes from "./clientLayout.module.css";
+import classes from "./CustomerLayout.module.css";
 import { User } from "../../../types/user";
 import { useState } from "react";
 

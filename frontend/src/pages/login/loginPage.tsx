@@ -13,19 +13,26 @@ import {
 import { useNavigate, useLocation } from "react-router-dom";
 import classes from "./loginPage.module.css";
 import { userService } from "../../service/user.service";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { LoginResponse } from "../../types/user";
 import { ErrorPayload } from "../../types/response";
 import InputErrors from "../../components/common/form/inputErrors";
+import { UserSessionContext, addUserSession } from "../../context/UserSession";
 
 export default function LoginPage() {
     const [errors, setErrors] = useState<{ [key: string]: Array<string> }>({});
     const { pathname } = useLocation();
-
+    const { dispatch, isLoggedIn } = useContext(UserSessionContext);
     const navigate = useNavigate();
 
+    if (isLoggedIn) {
+        navigate("/");
+    }
+
+    const isSeller = pathname.includes("/login/seller");
+
     const goToRegister = () => {
-        if (pathname.includes("/login/seller")) {
+        if (isSeller) {
             return navigate("/register?client=seller");
         }
         navigate("/register?client=customer");
@@ -49,22 +56,39 @@ export default function LoginPage() {
         email: string;
         password: string;
     }): Promise<void> {
-        const resp = await userService.login(values);
+        const payload = {
+            ...values,
+            registrationType: "CUSTOMER",
+        };
 
-        if (resp.status && resp.data) {
+        if (isSeller) {
+            payload["registrationType"] = "SELLER";
+        }
+        const resp = await userService.login(payload);
+
+        if (resp.success && resp.data) {
+            const payload = resp.data as LoginResponse;
+            addUserSession(dispatch, {
+                access_token: payload.access_token,
+                refresh_token: payload.refresh_token,
+                user: payload.userData,
+            });
             localStorage.setItem(
                 "accessToken",
-                (resp.data as LoginResponse).accessToken
+                (resp.data as LoginResponse).access_token
             );
-            let navigateTo = "/";
-            if (resp.data.roles.filter((r) => r.toLowerCase() === "seller"))
-                navigateTo += "seller";
+            localStorage.setItem(
+                "refreshToken",
+                (resp.data as LoginResponse).refresh_token
+            );
 
-            navigate(navigateTo);
+            if (isSeller) {
+                navigate("/seller/products");
+            } else {
+                navigate("/");
+            }
         } else {
             if (resp.data) setErrors(resp.data as ErrorPayload);
-
-            alert(resp.message);
         }
     }
 

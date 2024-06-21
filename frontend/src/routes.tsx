@@ -3,7 +3,7 @@ import { RouteObject } from "react-router-dom";
 import HomePage from "./pages/home";
 import LoginPage from "./pages/login/loginPage";
 import RegisterPage from "./pages/register/registerPage";
-import ClientLayout from "./components/layout/client/clientLayout";
+import ClientLayout from "./components/layout/customer/CustomerLayout";
 import ProductDetailPage from "./pages/product/detail/productDetailPage";
 import ProductsListingPage from "./pages/product/list/productsListingPage";
 import ProductAddUpdatePage from "./pages/product/addUpdate/productAddUpdatePage";

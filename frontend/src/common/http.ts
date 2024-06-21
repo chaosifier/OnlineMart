@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, {
     AxiosRequestConfig,
     AxiosResponse,
@@ -45,11 +46,47 @@ export class Backend {
                     return Promise.resolve(err.response?.data);
                 } else {
                     resp.message = err.message;
-                    return Promise.resolve(resp);
+                    return Promise.resolve(resp as any);
                 }
             } else {
                 resp.message = "Unknown error occurred";
-                return Promise.resolve(resp);
+                return Promise.resolve(resp as any);
+            }
+        }
+    }
+
+    static async applyAuthenticated<D>(
+        config: AxiosRequestConfig
+    ): Promise<GenericResponse<D>> {
+        try {
+            const conf = {
+                ...config,
+                headers: {
+                    ...config.headers,
+                    ["Authorization"]: localStorage.getItem("accessToken"),
+                },
+            };
+            return Http.apply<BaseResponseWithSuccess<D>>(
+                Backend.axiosInstance,
+                conf
+            );
+        } catch (err) {
+            const resp = {
+                status: false,
+                message: "",
+                data: {},
+            };
+
+            if (err instanceof AxiosError) {
+                if (err.response && err.response.data) {
+                    return Promise.resolve(err.response?.data);
+                } else {
+                    resp.message = err.message;
+                    return Promise.resolve(resp as any);
+                }
+            } else {
+                resp.message = "Unknown error occurred";
+                return Promise.resolve(resp as any);
             }
         }
     }

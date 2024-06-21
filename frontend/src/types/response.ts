@@ -1,5 +1,5 @@
 type Response = {
-    status: boolean;
+    success: boolean;
     message: string;
 };
 

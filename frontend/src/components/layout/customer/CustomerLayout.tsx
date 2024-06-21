@@ -1,3 +1,4 @@
+import { useContext, useEffect } from "react";
 import {
     Container,
     Group,
@@ -6,33 +7,32 @@ import {
     rem,
     Title,
 } from "@mantine/core";
-import classes from "./clientLayout.module.css";
 import { IconShoppingBag, IconBuildingStore } from "@tabler/icons-react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { UserSessionContext } from "../../../context/UserSession";
 import CategoryMenuComponent from "./categoryMenu/categoryMenu";
-import { useContext, useEffect } from "react";
 import Search from "../../common/search";
 import LoggedInMenu from "./loggedInMenu";
 import DefaultMenu from "./defaultMenu";
 import { CartSessionContext, initializeCart } from "../../../context/cart";
 import { cartService } from "../../../service/cart.service";
-import { CartProduct } from "../../../types/cart";
+import { Cart } from "../../../types/cart";
+import classes from "./CustomerLayout.module.css";
 
-const ClientLayout = () => {
+const CustomerLayout = () => {
     const { isLoggedIn, user } = useContext(UserSessionContext);
     const { dispatch } = useContext(CartSessionContext);
 
     useEffect(() => {
         if (isLoggedIn) {
-            cartService.getAll().then((data) => {
-                initializeCart(dispatch!, { cart: data.data as CartProduct[] });
+            cartService.getCartItems().then((data) => {
+                initializeCart(dispatch!, { cart: data.data as Cart });
             });
         } else {
             const items = localStorage.getItem("cart");
             initializeCart(dispatch!, { cart: items ? JSON.parse(items) : [] });
         }
-    }, []);
+    }, [isLoggedIn]);
 
     const navigate = useNavigate();
 
@@ -84,14 +84,19 @@ const ClientLayout = () => {
                                     </Text>
                                 </Group>
                             </UnstyledButton>
-                            <UnstyledButton onClick={goToRegister}>
-                                <Group gap={rem(5)}>
-                                    <IconBuildingStore radius="xl" size={35} />
-                                    <Text fw={500} size="sm" lh={1} mr={3}>
-                                        Register As a Seller
-                                    </Text>
-                                </Group>
-                            </UnstyledButton>
+                            {!isLoggedIn && (
+                                <UnstyledButton onClick={goToRegister}>
+                                    <Group gap={rem(5)}>
+                                        <IconBuildingStore
+                                            radius="xl"
+                                            size={35}
+                                        />
+                                        <Text fw={500} size="sm" lh={1} mr={3}>
+                                            Register As a Seller
+                                        </Text>
+                                    </Group>
+                                </UnstyledButton>
+                            )}
                         </Group>
                     </Group>
                 </Container>
@@ -101,4 +106,4 @@ const ClientLayout = () => {
         </>
     );
 };
-export default ClientLayout;
+export default CustomerLayout;

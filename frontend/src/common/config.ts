@@ -6,12 +6,16 @@ export const endpoints = {
         endpoints: {
             user: {
                 register: {
-                    url: "/register",
+                    url: "/auth/register",
                     method: "POST",
                 },
                 login: {
-                    url: "/login",
+                    url: "/auth/login",
                     method: "POST",
+                },
+                me: {
+                    url: "/auth/me",
+                    method: "GET",
                 },
             },
             product: {
@@ -58,6 +62,24 @@ export const endpoints = {
                 getAll: {
                     url: "/brands",
                     method: "GET",
+                },
+            },
+            cart: {
+                getCartItems: {
+                    url: "/cart",
+                    method: "GET",
+                },
+                add: {
+                    url: "/cart",
+                    method: "POST",
+                },
+                remove: {
+                    url: "/cart/item/{id}",
+                    method: "DELETE",
+                },
+                clearCart: {
+                    url: "/cart/items",
+                    method: "DELETE",
                 },
             },
             category: {

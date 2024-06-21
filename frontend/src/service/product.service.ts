@@ -98,7 +98,7 @@ class ProductService implements Service<Product, Product, number> {
         });
     }
     async delete(id: number): Promise<GenericResponse<null>> {
-        return await Backend.apply<null>({
+        return await Backend.applyAuthenticated<null>({
             ...endpoints.backendService.endpoints.product.delete,
             url: endpoints.backendService.endpoints.product.delete.url.replace(
                 "{id}",
@@ -108,7 +108,7 @@ class ProductService implements Service<Product, Product, number> {
     }
 
     async patch(id: number, data: Product): Promise<GenericResponse<Product>> {
-        return await Backend.apply<Product>({
+        return await Backend.applyAuthenticated<Product>({
             ...endpoints.backendService.endpoints.product.update,
             url: endpoints.backendService.endpoints.product.update.url.replace(
                 "{id}",
