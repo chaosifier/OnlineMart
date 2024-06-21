@@ -8,21 +8,25 @@ export type User = {
 
 export type LoginRequest = {
     email: string;
-    password: string
-}
+    password: string;
+};
 
 export type LoginResponse = {
-    accessToken : string;
-    roles: string[]
-}
+    accessToken: string;
+    roles: string[];
+};
 
 export type RegisterRequest = {
-    firstName: string,
-    lastName: string,
-    email: string,
-    password: string
-}
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+};
 
-export type RegisterResponse = {
-    
+export type RegisterResponse = {};
+
+export enum USER_ROLES {
+    ADMIN = "ADMIN",
+    CUSTOMER = "CUSTOMER",
+    SELLER = "SELLER",
 }
