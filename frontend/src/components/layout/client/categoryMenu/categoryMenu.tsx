@@ -1,40 +1,8 @@
-import {
-    HoverCard,
-    Group,
-    Button,
-    UnstyledButton,
-    Text,
-    SimpleGrid,
-    ThemeIcon,
-    Anchor,
-    Divider,
-    Center,
-    Box,
-    Burger,
-    Drawer,
-    Collapse,
-    ScrollArea,
-    rem,
-    useMantineTheme,
-    Menu,
-    Container,
-} from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import {
-    IconNotification,
-    IconCode,
-    IconBook,
-    IconChartPie3,
-    IconFingerprint,
-    IconCoin,
-    IconChevronDown,
-    IconChevronRight,
-} from "@tabler/icons-react";
-import classes from "./categoryMenu.module.css";
+import { Group, UnstyledButton, Menu } from "@mantine/core";
+import { IconChevronRight } from "@tabler/icons-react";
 import { useCallback, useEffect, useState } from "react";
 import { Category } from "../../../../types/category";
 import { categoryService } from "../../../../service/category.service";
-import React from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function CategoryMenuComponent() {
@@ -55,7 +23,9 @@ export default function CategoryMenuComponent() {
     }, [fetchData]);
 
     const handleCategoryClick = (slug: string) => {
-        navigate(`/products?category=${slug}`);
+        navigate(`/products?category=${slug}`, {
+            replace: true,
+        });
     };
 
     const getMenuItem = (link: Category) => {
@@ -64,7 +34,6 @@ export default function CategoryMenuComponent() {
                 width={200}
                 shadow="md"
                 position="right-start"
-                
                 closeOnItemClick={false}
             >
                 <Menu.Target>
