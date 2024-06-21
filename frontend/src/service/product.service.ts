@@ -33,6 +33,16 @@ class ProductService implements Service<Product, Product, number> {
             url: `${endpoints.backendService.endpoints.product.getAll.url}?${query}`,
         });
     }
+
+    async createProduct(
+        data: Partial<Product>
+    ): Promise<GenericResponse<Partial<Product>>> {
+        return await Backend.applyAuthenticated<Product>({
+            ...endpoints.backendService.endpoints.product.add,
+            data: data,
+        });
+    }
+
     async getAll(): Promise<GenericResponse<Partial<Product>[]>> {
         return await Backend.apply<Product[]>({
             ...endpoints.backendService.endpoints.product.getAll,
@@ -79,7 +89,7 @@ class ProductService implements Service<Product, Product, number> {
                 id.toString()
             ),
             data: {
-                product_status: status,
+                productStatus: status,
             },
         });
     }

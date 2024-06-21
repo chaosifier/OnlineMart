@@ -1,6 +1,14 @@
 import { useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import { Group, Code, ScrollArea, Text, Container, rem } from "@mantine/core";
+import {
+    Group,
+    Code,
+    ScrollArea,
+    Text,
+    Container,
+    rem,
+    Flex,
+} from "@mantine/core";
 import { IconGiftFilled, IconShoppingCart } from "@tabler/icons-react";
 import { GroupLinks, MenuLinks } from "../groupLinks";
 
@@ -65,7 +73,7 @@ export function SideBar() {
     ));
 
     return (
-        <div style={{ display: "flex" }}>
+        <Flex>
             <nav className={classes.navbar}>
                 <div className={classes.header}>
                     <Group justify="space-between">
@@ -81,6 +89,6 @@ export function SideBar() {
             <Container>
                 <Outlet />
             </Container>
-        </div>
+        </Flex>
     );
 }

@@ -9,12 +9,12 @@ export type ORDER_STATUS =
     | "RETURN_PROCESSING"
     | "RETURNED";
 
-type BrandEntry = {
+export type BrandEntry = {
     id: number;
     name: string;
 };
 
-type CategoryEntry = {
+export type CategoryEntry = {
     id: number;
     title: string;
     slug: string;
