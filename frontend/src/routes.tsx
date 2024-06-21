@@ -16,6 +16,7 @@ import CartPage from "./pages/cart/cartPage";
 import NotFoundComponent from "./components/common/notFound";
 import UserProfilePage from "./pages/userProfile/userProfile";
 import SellerProfilePage from "./pages/seller/profile/sellerProfilePage";
+import { CartSessionProvider } from "./context/cart";
 
 const routes: RouteObject[] = [
     {
@@ -36,7 +37,11 @@ const routes: RouteObject[] = [
     },
     {
         path: "/",
-        element: <ClientLayout />,
+        element: (
+            <CartSessionProvider>
+                <ClientLayout />
+            </CartSessionProvider>
+        ),
         children: [
             {
                 index: true,

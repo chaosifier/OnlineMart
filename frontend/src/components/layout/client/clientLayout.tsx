@@ -11,13 +11,28 @@ import { IconShoppingBag, IconBuildingStore } from "@tabler/icons-react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { UserSessionContext } from "../../../context/UserSession";
 import CategoryMenuComponent from "./categoryMenu/categoryMenu";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import Search from "../../common/search";
 import LoggedInMenu from "./loggedInMenu";
 import DefaultMenu from "./defaultMenu";
+import { CartSessionContext, initializeCart } from "../../../context/cart";
+import { cartService } from "../../../service/cart.service";
+import { CartProduct } from "../../../types/cart";
 
 const ClientLayout = () => {
     const { isLoggedIn, user } = useContext(UserSessionContext);
+    const { dispatch } = useContext(CartSessionContext);
+
+    useEffect(() => {
+        if (isLoggedIn) {
+            cartService.getAll().then((data) => {
+                initializeCart(dispatch!, { cart: data.data as CartProduct[] });
+            });
+        } else {
+            const items = localStorage.getItem("cart");
+            initializeCart(dispatch!, { cart: items ? JSON.parse(items) : [] });
+        }
+    }, []);
 
     const navigate = useNavigate();
 
