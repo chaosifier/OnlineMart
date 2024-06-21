@@ -10,8 +10,6 @@ const HomePage = () => {
         const res = await productService.getAll();
         if (res.success) {
             setData(res.data as Array<Product>);
-        } else {
-            console.log({ res });
         }
     }, []);
 

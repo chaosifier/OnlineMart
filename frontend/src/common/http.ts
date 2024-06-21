@@ -30,10 +30,11 @@ export class Backend {
         config: AxiosRequestConfig
     ): Promise<GenericResponse<D>> {
         try {
-            return Http.apply<BaseResponseWithSuccess<D>>(
+            const resp = await Http.apply<BaseResponseWithSuccess<D>>(
                 Backend.axiosInstance,
                 config
             );
+            return resp;
         } catch (err) {
             const resp = {
                 status: false,

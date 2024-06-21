@@ -10,18 +10,18 @@ import {
     Container,
     Title,
     SegmentedControl,
+    Flex,
+    rem,
 } from "@mantine/core";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import classes from "./loginPage.module.css";
 import { userService } from "../../service/user.service";
 import { useContext, useEffect, useState } from "react";
 import { LoginResponse, USER_ROLES } from "../../types/user";
-import { ErrorPayload } from "../../types/response";
-import InputErrors from "../../components/common/form/inputErrors";
 import { UserSessionContext, addUserSession } from "../../context/UserSession";
 
 export default function LoginPage() {
-    const [errors, setErrors] = useState<{ [key: string]: Array<string> }>({});
+    const [loginError, setLoginError] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams();
     const { dispatch, isLoggedIn, user } = useContext(UserSessionContext);
     const navigate = useNavigate();
@@ -56,12 +56,12 @@ export default function LoginPage() {
         },
     });
 
-    async function handleSubmit(values: {
-        email: string;
-        password: string;
-    }): Promise<void> {
+    async function handleSubmit(): Promise<void> {
+        if (form.validate().hasErrors) {
+            return;
+        }
         const payload = {
-            ...values,
+            ...form.getValues(),
             registrationType: USER_ROLES.CUSTOMER,
         };
 
@@ -92,7 +92,7 @@ export default function LoginPage() {
                 navigate("/");
             }
         } else {
-            if (resp.data) setErrors(resp.data as ErrorPayload);
+            setLoginError(true);
         }
     }
 
@@ -102,74 +102,66 @@ export default function LoginPage() {
                 Login to Online Mart!
             </Title>
             <Paper withBorder shadow="md" p={30} radius="md" mt="xl">
-                <form onSubmit={form.onSubmit(handleSubmit)}>
-                    <Stack>
-                        <TextInput
-                            label="Email"
-                            placeholder="Enter email"
-                            value={form.values.email}
-                            onChange={(event) =>
-                                form.setFieldValue(
-                                    "email",
-                                    event.currentTarget.value
-                                )
-                            }
-                            error={form.errors.email && "Invalid email"}
-                            radius="md"
-                        />
-                        <InputErrors messages={errors["email"]} />
-
-                        <PasswordInput
-                            label="Password"
-                            placeholder="Your password"
-                            value={form.values.password}
-                            onChange={(event) =>
-                                form.setFieldValue(
-                                    "password",
-                                    event.currentTarget.value
-                                )
-                            }
-                            error={
-                                form.errors.password &&
-                                "Password should include at least 6 characters"
-                            }
-                            radius="md"
-                        />
-                        <InputErrors messages={errors["password"]} />
-                    </Stack>
-                    <SegmentedControl
-                        radius="xl"
-                        size="md"
-                        mt={20}
-                        defaultValue={searchParams.get("client") ?? "customer"}
-                        data={[
-                            {
-                                value: "customer",
-                                label: "Login as Customer",
-                            },
-                            { value: "seller", label: "Login as Seller" },
-                        ]}
-                        classNames={classes}
-                        onChange={(data) => {
-                            setSearchParams(`client=${data}`);
-                        }}
+                <Stack>
+                    <TextInput
+                        label="Email"
+                        placeholder="Enter email"
+                        value={form.values.email}
+                        radius="md"
+                        key={form.key("email")}
+                        {...form.getInputProps("email")}
                     />
 
-                    <Group justify="space-between" mt="xl">
-                        <Anchor
-                            component="button"
-                            type="button"
-                            c="dimmed"
-                            onClick={goToRegister}
-                            size="xs"
-                        >
-                            Don't have an account? Register
-                        </Anchor>
-                        <Button type="submit" radius="xl">
-                            LOGIN
-                        </Button>
-                    </Group>
-                </form>
+                    <PasswordInput
+                        label="Password"
+                        placeholder="Your password"
+                        value={form.values.password}
+                        radius="md"
+                        key={form.key("password")}
+                        {...form.getInputProps("password")}
+                    />
+                </Stack>
+
+                <SegmentedControl
+                    radius="xl"
+                    size="md"
+                    mt={20}
+                    defaultValue={searchParams.get("client") ?? "customer"}
+                    data={[
+                        {
+                            value: "customer",
+                            label: "Login as Customer",
+                        },
+                        { value: "seller", label: "Login as Seller" },
+                    ]}
+                    classNames={classes}
+                    onChange={(data) => {
+                        setSearchParams(`client=${data}`);
+                    }}
+                />
+
+                {loginError && (
+                    <Flex justify={"center"} mt={rem(10)}>
+                        <span style={{ color: "var(--mantine-color-error)" }}>
+                            Invalid Credentials
+                        </span>
+                    </Flex>
+                )}
+
+                <Group justify="space-between" mt="md">
+                    <Anchor
+                        component="button"
+                        type="button"
+                        c="dimmed"
+                        onClick={goToRegister}
+                        size="xs"
+                    >
+                        Don't have an account? Register
+                    </Anchor>
+                    <Button onClick={handleSubmit} radius="xl">
+                        LOGIN
+                    </Button>
+                </Group>
             </Paper>
         </Container>
     );
