@@ -22,8 +22,8 @@ export default function CategoryMenuComponent() {
         fetchData();
     }, [fetchData]);
 
-    const handleCategoryClick = (slug: string) => {
-        navigate(`/products?category=${slug}`, {
+    const handleCategoryClick = (slug: string, catId: number) => {
+        navigate(`/products?category=${slug}&catId=${catId}`, {
             replace: true,
         });
     };
@@ -52,7 +52,7 @@ export default function CategoryMenuComponent() {
             >
                 <Menu.Item>
                     <UnstyledButton
-                        onClick={() => handleCategoryClick(link.slug)}
+                        onClick={() => handleCategoryClick(link.slug, link.id)}
                     >
                         {link.title}
                     </UnstyledButton>

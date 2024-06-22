@@ -7,6 +7,7 @@ import {
     Badge,
     Button,
     ActionIcon,
+    Flex,
 } from "@mantine/core";
 import classes from "./productCard.module.css";
 import { Product } from "../../../types/product";
@@ -21,6 +22,7 @@ import {
 } from "../../../context/cart";
 import { UserSessionContext } from "../../../context/UserSession";
 import { Cart, CartItem } from "../../../types/cart";
+import { Carousel, CarouselSlide } from "@mantine/carousel";
 
 export function ProductCard(props: { data: Product }) {
     const { isLoggedIn } = useContext(UserSessionContext);
@@ -65,7 +67,6 @@ export function ProductCard(props: { data: Product }) {
 
     useEffect(() => {
         let existingItm = getExistingCartItem();
-        console.log(existingItm);
         setCartItem(existingItm);
     }, [cart]);
 
@@ -75,33 +76,58 @@ export function ProductCard(props: { data: Product }) {
 
     return (
         <Card withBorder radius="md" p="md" className={classes.card}>
-            <div  className={classes.productImageContainer}>
-            {images.length > 0 && (
-                <Card.Section>
-                    <Image
-                        src={
-                            endpoints.backendService.imageCdnUrl +
-                            images[0].path
-                        }
-                        alt={title}
-                        height={180}
-                        style={{objectFit: "contain"}}
-                       
-                    />
-                </Card.Section>
-            )}
+            <div className={classes.productImageContainer}>
+                {images.length > 0 && (
+                    <Card.Section>
+                        <Carousel
+                            withIndicators
+                            loop
+                            classNames={{
+                                root: classes.carousel,
+                                controls: classes.carouselControls,
+                                indicator: classes.carouselIndicator,
+                            }}
+                        >
+                            {images.map((s, i) => (
+                                <CarouselSlide key={i}>
+                                    <Image
+                                        src={`${endpoints.backendService.imageCdnUrl}${s.path}`}
+                                        alt={title}
+                                        height={180}
+                                        style={{ objectFit: "cover" }}
+                                        fallbackSrc="https://placehold.co/600x400?text=Placeholder"
+                                    />
+                                </CarouselSlide>
+                            ))}
+                        </Carousel>
+                        {/* <Image
+                            src={
+                                endpoints.backendService.imageCdnUrl +
+                                images[0].path
+                            }
+                            alt={title}
+                            height={180}
+                            style={{ objectFit: "cover" }}
+                            fallbackSrc="https://placehold.co/600x400?text=Placeholder"
+                        /> */}
+                    </Card.Section>
+                )}
             </div>
 
-            <Card.Section className={classes.section} mt="md">
-                <Group justify="apart">
-                    <Text fz="lg" fw={500}>
-                        {title}
-                    </Text>
-                    <Badge size="sm" variant="light">
-                        {category.title}
-                    </Badge>
-                </Group>
-                <Text fz="sm">{description}</Text>
+            <Group align={"end"}>
+                <Badge size="sm" variant="light">
+                    {category.title}
+                </Badge>
+            </Group>
+            <Card.Section className={classes.section} mt="xs">
+                <Text fz="lg" fw={500}>
+                    {title}
+                </Text>
+                <Text
+                    fz="sm"
+                    dangerouslySetInnerHTML={{ __html: description }}
+                ></Text>
+
                 <Text fz="md" fw={500}>
                     Price: ${price}
                 </Text>

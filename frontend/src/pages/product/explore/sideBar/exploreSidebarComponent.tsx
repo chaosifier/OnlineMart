@@ -51,6 +51,7 @@ const ExploreSidebarComponent: React.FC<ExploreSidebarComponentProps> = ({
 }) => {
     const queryParams = new URLSearchParams(window.location.search);
     const searchTerm = queryParams.get("query");
+    const catId = queryParams.get("catId");
     const [minPrice, setMinPrice] = useState(0);
     const [maxPrice, setMaxPrice] = useState(9999);
 
@@ -98,19 +99,23 @@ const ExploreSidebarComponent: React.FC<ExploreSidebarComponentProps> = ({
                 name: searchTerm,
             };
 
-        if (minPrice)
+        queryParams = {
+            ...queryParams,
+            minPrice: minPrice,
+        };
+
+        queryParams = {
+            ...queryParams,
+            maxPrice: maxPrice,
+        };
+
+        if(catId){
             queryParams = {
                 ...queryParams,
-                minPrice: minPrice,
+                categoryId: catId,
             };
-
-        if (maxPrice)
-            queryParams = {
-                ...queryParams,
-                maxPrice: maxPrice,
-            };
-
-        console.table('in');
+        }
+        
         filterHandler(queryParams);
     };
 
