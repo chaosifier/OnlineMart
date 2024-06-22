@@ -12,7 +12,7 @@ import {
     Badge,
     ActionIcon,
 } from "@mantine/core";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { productService } from "../../../service/product.service";
 import { Product } from "../../../types/product";
@@ -20,14 +20,20 @@ import classes from "./productDetailPage.module.css";
 import { Carousel, CarouselSlide } from "@mantine/carousel";
 import "@mantine/carousel/styles.css";
 import { IconShoppingCart, IconShoppingCartFilled } from "@tabler/icons-react";
+import { imageCdnBaseUrl } from "../../../common/config";
+import { cartService } from "../../../service/cart.service";
+import { CartSessionContext, initializeCart } from "../../../context/cart";
+import { UserSessionContext } from "../../../context/UserSession";
+import { Cart, CartItem } from "../../../types/cart";
 
 const PRIMARY_COL_HEIGHT = rem(300);
 
 export default function ProductDetailPage() {
+    const { isLoggedIn } = useContext(UserSessionContext);
+    const { cart, dispatch } = useContext(CartSessionContext);
     const navigate = useNavigate();
     const { id } = useParams();
     const [data, setData] = useState<Product>();
-    const [inCart, setInCart] = useState(false);
     const badges = [
         { emoji: "☀️", label: "Sunny weather" },
         { emoji: "🦓", label: "Onsite zoo" },
@@ -35,6 +41,7 @@ export default function ProductDetailPage() {
         { emoji: "🌲", label: "Nature" },
         { emoji: "🤽", label: "Water sports" },
     ];
+    const [cartItem, setCartItem] = useState<CartItem | null>();
 
     const features = badges.map((badge) => (
         <Badge variant="light" key={badge.label} leftSection={badge.emoji}>
@@ -42,22 +49,44 @@ export default function ProductDetailPage() {
         </Badge>
     ));
 
-    const handleAddToCart = () => {
-        console.log("add/remove to/from cart");
-        setInCart(!inCart);
+    const addRemoveFromCart = async (prodId: number, checkout: boolean) => {
+        if (isLoggedIn) {
+            let resp = cartItem
+                ? await cartService.removeFromCart(cartItem.id)
+                : await cartService.addToCart({
+                      productId: prodId,
+                      quantity: 1,
+                  });
+            if (resp.success) {
+                initializeCart(dispatch!, { cart: resp.data as Cart });
+                if (checkout) {
+                    navigate("/checkout");
+                }
+            } else {
+                console.log("failure", resp);
+            }
+        } else {
+            navigate("/login");
+        }
     };
 
-    const handleCheckout = () => {
-        navigate("/checkout");
+    const getExistingCartItem = () => {
+        return cart?.items?.find((c) => c.product.id === data?.id);
     };
+
+    useEffect(() => {
+        let existingItm = getExistingCartItem();
+        console.log(existingItm);
+        setCartItem(existingItm);
+    }, [cart]);
 
     const fetchData = useCallback(async () => {
         if (id) {
             let res = await productService.get(Number.parseInt(id));
-            if (res.status) {
+            if (res.success) {
                 setData(res.data as Product);
             } else {
-                alert(res.message);
+                console.log(res);
             }
         }
     }, [id]);
@@ -112,7 +141,10 @@ export default function ProductDetailPage() {
                         >
                             {data.images.map((s, i) => (
                                 <CarouselSlide key={i}>
-                                    <Image src={s} height={400} />
+                                    <Image
+                                        src={`${imageCdnBaseUrl}${s.path}`}
+                                        height={400}
+                                    />
                                 </CarouselSlide>
                             ))}
                         </Carousel>
@@ -124,9 +156,7 @@ export default function ProductDetailPage() {
                                 </Text>
                             </Grid.Col>
                             <Grid.Col span={12}>
-                                <Group mb={15}>
-                                    {features}
-                                </Group>
+                                <Group mb={15}>{features}</Group>
                             </Grid.Col>
                             <Grid.Col span={12}>
                                 <Group gap={30}>
@@ -151,17 +181,21 @@ export default function ProductDetailPage() {
                                     <Button
                                         radius="xl"
                                         style={{ flex: 1 }}
-                                        onClick={handleCheckout}
+                                        onClick={() =>
+                                            addRemoveFromCart(data.id, true)
+                                        }
                                     >
                                         Buy now
                                     </Button>
                                     <ActionIcon
-                                        onClick={handleAddToCart}
+                                        onClick={() =>
+                                            addRemoveFromCart(data.id, false)
+                                        }
                                         variant="default"
                                         radius="md"
                                         size={36}
                                     >
-                                        {inCart ? (
+                                        {cartItem ? (
                                             <IconShoppingCartFilled
                                                 className={classes.like}
                                                 stroke={1.5}

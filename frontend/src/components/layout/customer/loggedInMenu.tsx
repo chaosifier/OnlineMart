@@ -16,9 +16,14 @@ import {
     IconStar,
     IconTrash,
 } from "@tabler/icons-react";
-import classes from "./clientLayout.module.css";
+import classes from "./CustomerLayout.module.css";
 import { User } from "../../../types/user";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import {
+    UserSessionContext,
+    removeUserSession,
+} from "../../../context/UserSession";
+import { useNavigate } from "react-router-dom";
 
 interface ILoggedInUser {
     user: User;
@@ -27,8 +32,15 @@ interface ILoggedInUser {
 const LoggedInMenu: React.FC<ILoggedInUser> = ({ user }) => {
     const theme = useMantineTheme();
     const [userMenuOpened, setUserMenuOpened] = useState(false);
+    const { dispatch } = useContext(UserSessionContext);
+    const navigate = useNavigate();
 
     const userName = `${user?.firstName} ${user?.lastName}`;
+
+    const logout = () => {
+        removeUserSession(dispatch);
+        navigate("/");
+    };
 
     return (
         <Menu
@@ -125,6 +137,7 @@ const LoggedInMenu: React.FC<ILoggedInUser> = ({ user }) => {
                     Account settings
                 </Menu.Item>
                 <Menu.Item
+                    onClick={logout}
                     leftSection={
                         <IconLogout
                             style={{

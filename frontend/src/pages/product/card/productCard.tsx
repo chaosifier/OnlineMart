@@ -11,31 +11,63 @@ import {
 import classes from "./productCard.module.css";
 import { Product } from "../../../types/product";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { endpoints } from "../../../common/config";
+import { cartService } from "../../../service/cart.service";
+import {
+    CartSessionContext,
+    initializeCart,
+    // addItemToCart,
+} from "../../../context/cart";
+import { UserSessionContext } from "../../../context/UserSession";
+import { Cart, CartItem } from "../../../types/cart";
 
 export function ProductCard(props: { data: Product }) {
+    const { isLoggedIn } = useContext(UserSessionContext);
     const navigate = useNavigate();
-    const { id, images, title, description, category } = props.data;
-
+    const { id, images, title, description, category, price } = props.data;
+    const { cart, dispatch } = useContext(CartSessionContext);
     const [inCart, setInCart] = useState(false);
-    const badges = [
-        { emoji: "☀️", label: "Sunny weather" },
-        { emoji: "🦓", label: "Onsite zoo" },
-        { emoji: "🌊", label: "Sea" },
-        { emoji: "🌲", label: "Nature" },
-        { emoji: "🤽", label: "Water sports" },
-    ];
+    const [cartItem, setCartItem] = useState<CartItem | null>();
 
-    const features = badges.map((badge) => (
-        <Badge variant="light" key={badge.label} leftSection={badge.emoji}>
-            {badge.label}
-        </Badge>
-    ));
+    useEffect(() => {
+        let toSet =
+            cart &&
+            cart.items &&
+            cart.items.filter((i) => i.product.id === id).length > 0
+                ? true
+                : false;
+        setInCart(toSet);
+        console.log(toSet, "toSet");
+    }, [cart]);
 
-    const handleAddToCart = () => {
-        console.log("add/remove to/from cart");
-        setInCart(!inCart);
+    const addRemoveFromCart = async (prodId: number) => {
+        if (isLoggedIn) {
+            let resp = cartItem
+                ? await cartService.removeFromCart(cartItem.id)
+                : await cartService.addToCart({
+                      productId: prodId,
+                      quantity: 1,
+                  });
+            if (resp.success) {
+                initializeCart(dispatch!, { cart: resp.data as Cart });
+            } else {
+                console.log("failure", resp);
+            }
+        } else {
+            navigate("/login");
+        }
     };
+
+    const getExistingCartItem = () => {
+        return cart?.items?.find((c) => c.product.id === id);
+    };
+
+    useEffect(() => {
+        let existingItm = getExistingCartItem();
+        console.log(existingItm);
+        setCartItem(existingItm);
+    }, [cart]);
 
     const handleProductClick = () => {
         navigate(`/products/${id}`);
@@ -43,11 +75,22 @@ export function ProductCard(props: { data: Product }) {
 
     return (
         <Card withBorder radius="md" p="md" className={classes.card}>
+            <div  className={classes.productImageContainer}>
             {images.length > 0 && (
                 <Card.Section>
-                    <Image src={images[0]} alt={title} height={180} />
+                    <Image
+                        src={
+                            endpoints.backendService.imageCdnUrl +
+                            images[0].path
+                        }
+                        alt={title}
+                        height={180}
+                        style={{objectFit: "contain"}}
+                       
+                    />
                 </Card.Section>
             )}
+            </div>
 
             <Card.Section className={classes.section} mt="md">
                 <Group justify="apart">
@@ -55,21 +98,13 @@ export function ProductCard(props: { data: Product }) {
                         {title}
                     </Text>
                     <Badge size="sm" variant="light">
-                        {category}
+                        {category.title}
                     </Badge>
                 </Group>
-                <Text fz="sm" mt="xs">
-                    {description}
+                <Text fz="sm">{description}</Text>
+                <Text fz="md" fw={500}>
+                    Price: ${price}
                 </Text>
-            </Card.Section>
-
-            <Card.Section className={classes.section}>
-                <Text mt="md" className={classes.label} c="dimmed">
-                    Perfect for you, if you enjoy
-                </Text>
-                <Group gap={7} mt={5}>
-                    {features}
-                </Group>
             </Card.Section>
 
             <Group mt="xs">
@@ -81,7 +116,7 @@ export function ProductCard(props: { data: Product }) {
                     Show details
                 </Button>
                 <ActionIcon
-                    onClick={handleAddToCart}
+                    onClick={() => addRemoveFromCart(id)}
                     variant="default"
                     radius="md"
                     size={36}

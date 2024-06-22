@@ -4,14 +4,12 @@ import { Product } from "../../types/product";
 import { productService } from "../../service/product.service";
 
 const HomePage = () => {
-    const [data, setData] = useState(new Array<Product>());
+    const [data, setData] = useState<Array<Product> | null>(null);
 
     const fetchData = useCallback(async () => {
-        let res = await productService.getAll();
-        if (res.status) {
+        const res = await productService.getAll();
+        if (res.success) {
             setData(res.data as Array<Product>);
-        } else {
-            alert(res.message);
         }
     }, []);
 

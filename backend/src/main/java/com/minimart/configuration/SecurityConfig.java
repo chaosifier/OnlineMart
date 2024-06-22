@@ -1,10 +1,11 @@
 package com.minimart.configuration;
 
-import com.amazonaws.services.managedgrafana.model.Role;
 import com.minimart.auth.filter.JWTFilter;
+import com.minimart.user.dto.RegistrationType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -33,11 +34,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http.authorizeHttpRequests((requests) -> requests
+        http
+//                .cors(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests((requests) -> requests
+                        .requestMatchers("**", "swagger-ui/**").permitAll()
+                        .requestMatchers("/", "sendEmail").permitAll()
                         .requestMatchers("/", "api/v1/auth/**").permitAll()
-                                .requestMatchers("/api/**").authenticated()
-//                        .requestMatchers("/admin/**", "*/api/v1/**", "/api/v1/users").hasAuthority(Role.ADMIN.name())
-//                        .requestMatchers("/posts/**", "/users/**").hasAnyAuthority(Role.ADMIN.name(), Role.EDITOR.name())
+                        .requestMatchers(HttpMethod.GET, "api/v1/**").permitAll()
+                        .requestMatchers("api/v1/users").authenticated()
+                        .requestMatchers("/api/**").authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable); // spring boot enables csrf by default which blocks POST PUT PATCH requests
 

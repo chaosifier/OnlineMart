@@ -41,6 +41,12 @@ class UserService implements Service<User, User, number> {
             data: data,
         });
     }
+
+    getMyinfo(): Promise<GenericResponse<Partial<User>>> {
+        return Backend.applyAuthenticated({
+            ...endpoints.backendService.endpoints.user.me,
+        });
+    }
 }
 
 export const userService = new UserService();

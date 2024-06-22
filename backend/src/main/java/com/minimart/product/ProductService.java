@@ -10,6 +10,7 @@ import com.minimart.common.exception.NoResourceFoundException;
 import com.minimart.helpers.ListMapper;
 import com.minimart.product.dto.request.CreateProductDto;
 import com.minimart.product.dto.request.CreateProductReviewDto;
+import com.minimart.product.dto.request.ProductFilterDto;
 import com.minimart.product.dto.request.UpdateProductDto;
 import com.minimart.product.dto.response.ProductDetailResponseDto;
 import com.minimart.product.dto.response.ProductImageResponseDto;
@@ -22,6 +23,7 @@ import com.minimart.product.entity.ProductStatus;
 import com.minimart.product.repository.ProductImageRepository;
 import com.minimart.product.repository.ProductRepository;
 import com.minimart.product.repository.ProductReviewRepository;
+import com.minimart.product.repository.ProductSpecification;
 import com.minimart.role.dto.RoleResponseDto;
 import com.minimart.role.entity.Role;
 import com.minimart.user.dto.response.UserDetailDto;
@@ -32,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -70,12 +73,13 @@ public class ProductService implements CommonService<CreateProductDto, UpdatePro
         return (List<ProductResponseDto>) listMapper.mapList(productRepository.findAll(),new ProductResponseDto());
     }
 
-    @Override
     @SuppressWarnings("unchecked")
-    public Page<ProductResponseDto> findAll(PaginationDto paginationDto) {
+    public Page<ProductResponseDto> findAll(PaginationDto paginationDto, ProductFilterDto productFilterDto) {
         Pageable pageable = PageRequest.of(paginationDto.getPage(), paginationDto.getSize());
-        Page<Product> paginatedUser = productRepository.findAll(pageable);
-        return paginatedUser.map(user -> modelMapper.map(user, ProductResponseDto.class));
+        System.out.println("productFilterDto" + productFilterDto);
+        Specification<Product> spec = new ProductSpecification(productFilterDto);
+        Page<Product> paginatedProducts = productRepository.findAll(spec, pageable);
+        return paginatedProducts.map(product -> modelMapper.map(product, ProductResponseDto.class));
     }
 
     @SuppressWarnings("unchecked")
@@ -113,6 +117,42 @@ public class ProductService implements CommonService<CreateProductDto, UpdatePro
     @Override
     public ProductResponseDto update(Integer id, UpdateProductDto updateDto) throws Exception {
         Product existingRecord = productRepository.findById(id).orElseThrow(() -> new NoResourceFoundException("No product found with provided id"));
+        if(updateDto != null){
+            if(updateDto.getBrand_id() != 0){
+                Brand brand = brandRepository.findById(updateDto.getBrand_id()).orElseThrow(() -> new NoResourceFoundException("No brand found with provided id"));
+                existingRecord.setBrand(brand);
+            }
+
+            if(updateDto.getProductStatus() != null){
+                ProductStatus status = ProductStatus.valueOf(updateDto.getProductStatus());
+                existingRecord.setStatus(status);
+            }
+
+            if(updateDto.getCategory_id() != 0){
+                ProductCategory category = categoryRepository.findById(updateDto.getCategory_id()).orElseThrow(() -> new NoResourceFoundException("No Category found with provided id"));
+                existingRecord.setCategory(category);
+            }
+
+            if(updateDto.getSlug() != null){
+                existingRecord.setSlug(updateDto.getSlug());
+            }
+
+            if(updateDto.getTitle() != null){
+                existingRecord.setTitle(updateDto.getTitle());
+            }
+
+            if(updateDto.getDescription() != null){
+                existingRecord.setDescription(updateDto.getDescription());
+            }
+
+            if(updateDto.getPrice() != 0){
+                existingRecord.setPrice(updateDto.getPrice());
+            }
+
+            if(updateDto.getStock() != 0){
+                existingRecord.setStock(updateDto.getStock());
+            }
+        }
         Product updatedRecord = productRepository.save(existingRecord);
         return modelMapper.map(updatedRecord, ProductResponseDto.class);
     }

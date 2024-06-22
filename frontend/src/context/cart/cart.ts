@@ -1,9 +1,8 @@
 import React from "react";
-import { Product } from "../../types/product";
+import { Cart, CartItem } from "../../types/cart";
 
-type CartProduct = Product & { count: number };
 export interface CartSession {
-    cart: CartProduct[];
+    cart?: Cart;
     dispatch: React.Dispatch<Action>;
 }
 
@@ -17,7 +16,7 @@ type Action = {
 };
 
 export const defaultValues: CartSession = {
-    cart: [],
+    cart: undefined,
     dispatch: () => null,
 };
 
@@ -29,32 +28,39 @@ CartSessionContext.displayName = "Cart-Session";
 export const CartSessionReducer = (prevState: CartSession, action: Action) => {
     switch (action.type) {
         case "INITIALIZE": {
-            console.log({ action });
             const newState = {
                 ...prevState,
-                cart: action.payload.cart as unknown as CartProduct[],
+                cart: action.payload.cart as unknown as Cart,
             };
             return newState;
         }
         case "UPDATE_CART_ITEM_COUNT": {
             const newState = { ...prevState };
-            const item = newState.cart.filter(
+            const item = newState.cart?.items.filter(
                 (it) => it === action.payload.id
             )[0];
-            item.count += action.payload.count as unknown as number;
+            if (item) {
+                item.quantity += action.payload.count as unknown as number;
+            }
             return newState;
         }
         case "ADD_TO_CART": {
             const newState = { ...prevState };
-            newState.cart.push(
-                action.payload.product as unknown as CartProduct
+            newState.cart?.items.push(
+                action.payload.product as unknown as CartItem
             );
             return newState;
         }
         case "REMOVE_FROM_CART": {
             const newState = { ...prevState };
-            const item = newState.cart.filter((it) => it !== action.payload.id);
-            newState.cart = item;
+            if (newState.cart) {
+                const items = newState?.cart?.items.filter(
+                    (it) => it !== action.payload.id
+                );
+                if (items) {
+                    newState.cart.items = items;
+                }
+            }
             return newState;
         }
         default: {
@@ -65,7 +71,7 @@ export const CartSessionReducer = (prevState: CartSession, action: Action) => {
 
 export const initializeCart = (
     dispatch: React.Dispatch<Action>,
-    payload: { cart: CartProduct[] }
+    payload: { cart: Cart }
 ) => {
     dispatch({
         type: "INITIALIZE",
@@ -75,7 +81,7 @@ export const initializeCart = (
 
 export const addItemToCart = (
     dispatch: React.Dispatch<Action>,
-    payload: CartProduct
+    payload: CartItem
 ) => {
     dispatch({
         type: "ADD_TO_CART",

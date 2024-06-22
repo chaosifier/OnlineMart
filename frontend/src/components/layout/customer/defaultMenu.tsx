@@ -8,7 +8,7 @@ import {
 } from "@mantine/core";
 import { IconChevronDown, IconLogin2 } from "@tabler/icons-react";
 
-import classes from "./clientLayout.module.css";
+import classes from "./CustomerLayout.module.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -18,7 +18,7 @@ const DefaultMenu = () => {
     const navigate = useNavigate();
 
     const goToLogin = () => {
-        return navigate("/login");
+        return navigate("/login?client=customer");
     };
 
     const goToRegister = () => {

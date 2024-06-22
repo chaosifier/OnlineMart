@@ -9,7 +9,7 @@ class ProductService implements Service<Role, Role, number> {
         throw new Error("Method not implemented.");
     }
     getAll(): Promise<GenericResponse<Partial<Role>[]>> {
-        return Backend.apply<Role[]>({
+        return Backend.applyAuthenticated<Role[]>({
             ...endpoints.backendService.endpoints.role.getAll,
         });
     }

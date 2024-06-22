@@ -9,23 +9,34 @@ import {
     Stack,
     Container,
     Title,
+    SegmentedControl,
+    Flex,
+    rem,
 } from "@mantine/core";
-import { useNavigate, useLocation } from "react-router-dom";
+import { Form, useNavigate, useSearchParams } from "react-router-dom";
 import classes from "./loginPage.module.css";
 import { userService } from "../../service/user.service";
-import { useState } from "react";
-import { LoginResponse } from "../../types/user";
-import { ErrorPayload } from "../../types/response";
-import InputErrors from "../../components/common/form/inputErrors";
+import { useContext, useEffect, useState } from "react";
+import { LoginResponse, USER_ROLES } from "../../types/user";
+import { UserSessionContext, addUserSession } from "../../context/UserSession";
 
 export default function LoginPage() {
-    const [errors, setErrors] = useState<{ [key: string]: Array<string> }>({});
-    const { pathname } = useLocation();
-
+    const [loginError, setLoginError] = useState(false);
+    const [searchParams, setSearchParams] = useSearchParams();
+    const { dispatch, isLoggedIn, user } = useContext(UserSessionContext);
     const navigate = useNavigate();
 
+    useEffect(() => {
+        if (isLoggedIn && user && user?.roles?.[0].slug === USER_ROLES.SELLER) {
+            return navigate("/seller/products");
+        }
+        if (isLoggedIn) {
+            navigate("/");
+        }
+    }, [isLoggedIn]);
+
     const goToRegister = () => {
-        if (pathname.includes("/login/seller")) {
+        if (searchParams.get("client") === "seller") {
             return navigate("/register?client=seller");
         }
         navigate("/register?client=customer");
@@ -39,32 +50,49 @@ export default function LoginPage() {
         validate: {
             email: (val) => (/^\S+@\S+$/.test(val) ? null : "Invalid email"),
             password: (val) =>
-                val.length <= 6
-                    ? "Password should include at least 6 characters"
+                val.length <= 4
+                    ? "Password should include at least 4 characters"
                     : null,
         },
     });
 
-    async function handleSubmit(values: {
-        email: string;
-        password: string;
-    }): Promise<void> {
-        const resp = await userService.login(values);
+    async function handleSubmit(): Promise<void> {
+        if (form.validate().hasErrors) {
+            return;
+        }
+        const payload = {
+            ...form.getValues(),
+            registrationType: USER_ROLES.CUSTOMER,
+        };
 
-        if (resp.status && resp.data) {
+        if (searchParams.get("client") === "seller") {
+            payload["registrationType"] = USER_ROLES.SELLER;
+        }
+        const resp = await userService.login(payload);
+
+        if (resp.success && resp.data) {
+            const payload = resp.data as LoginResponse;
+            addUserSession(dispatch, {
+                access_token: payload.access_token,
+                refresh_token: payload.refresh_token,
+                user: payload.userData,
+            });
             localStorage.setItem(
                 "accessToken",
-                (resp.data as LoginResponse).accessToken
+                (resp.data as LoginResponse).access_token
             );
-            let navigateTo = "/";
-            if (resp.data.roles.filter((r) => r.toLowerCase() === "seller"))
-                navigateTo += "seller";
+            localStorage.setItem(
+                "refreshToken",
+                (resp.data as LoginResponse).refresh_token
+            );
 
-            navigate(navigateTo);
+            if (searchParams.get("client") === "seller") {
+                navigate("/seller/products");
+            } else {
+                navigate("/");
+            }
         } else {
-            if (resp.data) setErrors(resp.data as ErrorPayload);
-
-            alert(resp.message);
+            setLoginError(true);
         }
     }
 
@@ -74,43 +102,56 @@ export default function LoginPage() {
                 Login to Online Mart!
             </Title>
             <Paper withBorder shadow="md" p={30} radius="md" mt="xl">
-                <form onSubmit={form.onSubmit(handleSubmit)}>
+                <Form onSubmit={handleSubmit}>
                     <Stack>
                         <TextInput
                             label="Email"
                             placeholder="Enter email"
                             value={form.values.email}
-                            onChange={(event) =>
-                                form.setFieldValue(
-                                    "email",
-                                    event.currentTarget.value
-                                )
-                            }
-                            error={form.errors.email && "Invalid email"}
                             radius="md"
+                            key={form.key("email")}
+                            {...form.getInputProps("email")}
                         />
-                        <InputErrors messages={errors["email"]} />
 
                         <PasswordInput
                             label="Password"
                             placeholder="Your password"
                             value={form.values.password}
-                            onChange={(event) =>
-                                form.setFieldValue(
-                                    "password",
-                                    event.currentTarget.value
-                                )
-                            }
-                            error={
-                                form.errors.password &&
-                                "Password should include at least 6 characters"
-                            }
                             radius="md"
+                            key={form.key("password")}
+                            {...form.getInputProps("password")}
                         />
-                        <InputErrors messages={errors["password"]} />
                     </Stack>
 
-                    <Group justify="space-between" mt="xl">
+                    <SegmentedControl
+                        radius="xl"
+                        size="md"
+                        mt={20}
+                        defaultValue={searchParams.get("client") ?? "customer"}
+                        data={[
+                            {
+                                value: "customer",
+                                label: "Login as Customer",
+                            },
+                            { value: "seller", label: "Login as Seller" },
+                        ]}
+                        classNames={classes}
+                        onChange={(data) => {
+                            setSearchParams(`client=${data}`);
+                        }}
+                    />
+
+                    {loginError && (
+                        <Flex justify={"center"} mt={rem(10)}>
+                            <span
+                                style={{ color: "var(--mantine-color-error)" }}
+                            >
+                                Invalid Credentials
+                            </span>
+                        </Flex>
+                    )}
+
+                    <Group justify="space-between" mt="md">
                         <Anchor
                             component="button"
                             type="button"
@@ -124,7 +165,7 @@ export default function LoginPage() {
                             LOGIN
                         </Button>
                     </Group>
-                </form>
+                </Form>
             </Paper>
         </Container>
     );

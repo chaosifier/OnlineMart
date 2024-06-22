@@ -14,10 +14,18 @@ import classes from "./registerPage.module.css";
 import { useForm } from "@mantine/form";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { userService } from "../../service/user.service";
+import { UserSessionContext } from "../../context/UserSession";
+import { useContext } from "react";
 
 export default function RegisterPage() {
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
+    const { isLoggedIn } = useContext(UserSessionContext);
+
+    if (isLoggedIn) {
+        navigate("/");
+    }
+
     const form = useForm({
         initialValues: {
             email: "",
@@ -42,20 +50,20 @@ export default function RegisterPage() {
         firstName: string;
         lastName: string;
     }): Promise<void> {
-        const resp = await userService.login(values);
+        const resp = await userService.register(values);
 
-        if (resp.status && resp.data) {
+        if (resp.success && resp.data) {
             goToLogin();
         } else {
-            alert(resp.message);
+            console.log({ resp });
         }
     }
 
     const goToLogin = () => {
         if (searchParams.get("client") === "seller") {
-            return navigate("/login/seller");
+            return navigate("/login?client=seller");
         }
-        navigate("/login");
+        navigate("/login?client=customer");
     };
 
     return (
