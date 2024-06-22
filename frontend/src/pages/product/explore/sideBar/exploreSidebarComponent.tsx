@@ -1,6 +1,5 @@
 import {
     TextInput,
-    Code,
     UnstyledButton,
     Badge,
     Text,
@@ -8,9 +7,6 @@ import {
     ActionIcon,
     Tooltip,
     rem,
-    Container,
-    Title,
-    SimpleGrid,
     RangeSlider,
 } from "@mantine/core";
 import {
@@ -22,7 +18,8 @@ import {
 } from "@tabler/icons-react";
 import classes from "./exploreSidebarComponent.module.css";
 import { ProductFilterParam } from "../../../../service/product.service";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 const links = [
     { icon: IconBulb, label: "Activity", notifications: 3 },
@@ -49,11 +46,47 @@ interface ExploreSidebarComponentProps {
 const ExploreSidebarComponent: React.FC<ExploreSidebarComponentProps> = ({
     filterHandler,
 }) => {
-    const queryParams = new URLSearchParams(window.location.search);
-    const searchTerm = queryParams.get("query");
-    const catId = queryParams.get("catId");
+    const [searchParams, setSearchParams] = useSearchParams();
     const [minPrice, setMinPrice] = useState(0);
     const [maxPrice, setMaxPrice] = useState(9999);
+
+    const catId = searchParams.get("catId");
+    const category = searchParams.get("category");
+    const searchTerm = searchParams.get("query");
+
+    useEffect(() => {
+        callFilterHandler();
+    }, [catId, searchTerm, category]);
+
+    const callFilterHandler = () => {
+        let queryParams = {};
+        if (searchTerm)
+            queryParams = {
+                ...queryParams,
+                name: searchTerm,
+            };
+
+        queryParams = {
+            ...queryParams,
+            minPrice: minPrice,
+        };
+
+        queryParams = {
+            ...queryParams,
+            maxPrice: maxPrice,
+        };
+
+        if (catId) {
+            queryParams = {
+                ...queryParams,
+                categoryId: catId,
+            };
+        }
+
+        console.log({ queryParams });
+
+        filterHandler(queryParams);
+    };
 
     const mainLinks = links.map((link) => (
         <UnstyledButton key={link.label} className={classes.mainLink}>
@@ -90,34 +123,6 @@ const ExploreSidebarComponent: React.FC<ExploreSidebarComponentProps> = ({
             {collection.label}
         </a>
     ));
-
-    const callFilterHandler = () => {
-        let queryParams = {};
-        if (searchTerm)
-            queryParams = {
-                ...queryParams,
-                name: searchTerm,
-            };
-
-        queryParams = {
-            ...queryParams,
-            minPrice: minPrice,
-        };
-
-        queryParams = {
-            ...queryParams,
-            maxPrice: maxPrice,
-        };
-
-        if(catId){
-            queryParams = {
-                ...queryParams,
-                categoryId: catId,
-            };
-        }
-        
-        filterHandler(queryParams);
-    };
 
     return (
         <nav className={classes.navbar}>

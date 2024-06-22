@@ -13,7 +13,7 @@ export default function ProductsExplorePage() {
     const [data, setData] = useState<Array<Product> | null>(null);
 
     const handleFilter = async (params: Partial<ProductFilterParam>) => {
-        let res = await productService.filter(params);
+        const res = await productService.filter(params);
         if (res.success) {
             setData(res.data as Array<Product>);
         } else {

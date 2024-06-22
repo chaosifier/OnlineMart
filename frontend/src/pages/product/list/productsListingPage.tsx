@@ -13,6 +13,7 @@ import {
     Modal,
     Select,
     Button,
+    Center,
 } from "@mantine/core";
 import Search from "../../../components/common/search";
 import { IconEye, IconPencil, IconTrash } from "@tabler/icons-react";
@@ -139,38 +140,52 @@ export default function ProductsListingPage() {
         <Container my="lg">
             <Flex align={"center"} justify={"space-between"}>
                 <h1>Product Listing Page</h1>
-                <Search
-                    placeholder="search products"
-                    onDebounce={search}
-                    disableRightSection={true}
-                />
+                {data.length > 0 && (
+                    <Search
+                        placeholder="search products"
+                        onDebounce={search}
+                        disableRightSection={true}
+                    />
+                )}
             </Flex>
 
             <ScrollArea>
-                <Table
-                    miw={800}
-                    verticalSpacing="sm"
-                    striped
-                    highlightOnHover
-                    withTableBorder
-                    withColumnBorders
-                >
-                    <Table.Thead>
-                        <Table.Tr>
-                            <Table.Th>Name</Table.Th>
-                            <Table.Th>Price</Table.Th>
-                            <Table.Th>Brand</Table.Th>
-                            <Table.Th>Category</Table.Th>
-                            <Table.Th>Status</Table.Th>
-                            <Table.Th>Action</Table.Th>
-                        </Table.Tr>
-                    </Table.Thead>
-                    <Table.Tbody>{rows}</Table.Tbody>
-                </Table>
+                {data.length > 0 ? (
+                    <Table
+                        miw={800}
+                        verticalSpacing="sm"
+                        striped
+                        highlightOnHover
+                        withTableBorder
+                        withColumnBorders
+                    >
+                        <Table.Thead>
+                            <Table.Tr>
+                                <Table.Th>Name</Table.Th>
+                                <Table.Th>Price</Table.Th>
+                                <Table.Th>Brand</Table.Th>
+                                <Table.Th>Category</Table.Th>
+                                <Table.Th>Status</Table.Th>
+                                <Table.Th>Action</Table.Th>
+                            </Table.Tr>
+                        </Table.Thead>
+                        <Table.Tbody>{rows}</Table.Tbody>
+                    </Table>
+                ) : (
+                    <Center>
+                        <h3>No Orders Found</h3>
+                    </Center>
+                )}
             </ScrollArea>
-            <Flex justify={"center"} mt="md">
-                <Pagination total={5} value={activePage} onChange={setPage} />
-            </Flex>
+            {data.length > 0 && (
+                <Flex justify={"center"} mt="md">
+                    <Pagination
+                        total={5}
+                        value={activePage}
+                        onChange={setPage}
+                    />
+                </Flex>
+            )}
             <Modal
                 opened={opened}
                 onClose={closeStatusChangeModal}

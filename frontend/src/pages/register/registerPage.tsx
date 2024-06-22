@@ -16,6 +16,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { userService } from "../../service/user.service";
 import { UserSessionContext } from "../../context/UserSession";
 import { useContext } from "react";
+import { USER_ROLES } from "../../types/user";
 
 export default function RegisterPage() {
     const navigate = useNavigate();
@@ -50,7 +51,15 @@ export default function RegisterPage() {
         firstName: string;
         lastName: string;
     }): Promise<void> {
-        const resp = await userService.register(values);
+        const payload = {
+            ...values,
+            registrationType: USER_ROLES.CUSTOMER,
+        };
+
+        if (searchParams.get("client") === "seller") {
+            payload["registrationType"] = USER_ROLES.SELLER;
+        }
+        const resp = await userService.register(payload);
 
         if (resp.success && resp.data) {
             goToLogin();

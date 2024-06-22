@@ -1,4 +1,4 @@
-import { ActionIcon, Button, Modal, Select } from "@mantine/core";
+import { ActionIcon, Button, Center, Modal, Select } from "@mantine/core";
 
 import { useEffect, useState } from "react";
 import {
@@ -124,40 +124,54 @@ export default function OrdersListingPage() {
         <Container my="lg">
             <Flex align={"center"} justify={"space-between"}>
                 <h1>Orders Listing Page</h1>
-                <Search
-                    placeholder="search orders"
-                    onDebounce={search}
-                    disableRightSection={true}
-                />
+                {data.length > 0 && (
+                    <Search
+                        placeholder="search orders"
+                        onDebounce={search}
+                        disableRightSection={true}
+                    />
+                )}
             </Flex>
 
             <ScrollArea>
-                <Table
-                    miw={800}
-                    verticalSpacing="sm"
-                    striped
-                    highlightOnHover
-                    withTableBorder
-                    withColumnBorders
-                >
-                    <Table.Thead>
-                        <Table.Tr>
-                            <Table.Th>Name</Table.Th>
-                            <Table.Th>Quantity</Table.Th>
-                            <Table.Th>Unit Price</Table.Th>
-                            <Table.Th>Tax Amount</Table.Th>
-                            <Table.Th>Total</Table.Th>
-                            <Table.Th>Category</Table.Th>
-                            <Table.Th>Status</Table.Th>
-                            <Table.Th>Action</Table.Th>
-                        </Table.Tr>
-                    </Table.Thead>
-                    <Table.Tbody>{rows}</Table.Tbody>
-                </Table>
+                {data.length > 0 ? (
+                    <Table
+                        miw={800}
+                        verticalSpacing="sm"
+                        striped
+                        highlightOnHover
+                        withTableBorder
+                        withColumnBorders
+                    >
+                        <Table.Thead>
+                            <Table.Tr>
+                                <Table.Th>Name</Table.Th>
+                                <Table.Th>Quantity</Table.Th>
+                                <Table.Th>Unit Price</Table.Th>
+                                <Table.Th>Tax Amount</Table.Th>
+                                <Table.Th>Total</Table.Th>
+                                <Table.Th>Category</Table.Th>
+                                <Table.Th>Status</Table.Th>
+                                <Table.Th>Action</Table.Th>
+                            </Table.Tr>
+                        </Table.Thead>
+                        <Table.Tbody>{rows}</Table.Tbody>
+                    </Table>
+                ) : (
+                    <Center>
+                        <h3>No Orders Found</h3>
+                    </Center>
+                )}
             </ScrollArea>
-            <Flex justify={"center"} mt="md">
-                <Pagination total={5} value={activePage} onChange={setPage} />
-            </Flex>
+            {data.length > 0 && (
+                <Flex justify={"center"} mt="md">
+                    <Pagination
+                        total={5}
+                        value={activePage}
+                        onChange={setPage}
+                    />
+                </Flex>
+            )}
             <Modal
                 opened={opened}
                 onClose={closeStatusChangeModal}
