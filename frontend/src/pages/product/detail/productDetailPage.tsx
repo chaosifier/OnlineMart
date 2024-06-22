@@ -76,7 +76,6 @@ export default function ProductDetailPage() {
 
     useEffect(() => {
         let existingItm = getExistingCartItem();
-        console.log(existingItm);
         setCartItem(existingItm);
     }, [cart]);
 

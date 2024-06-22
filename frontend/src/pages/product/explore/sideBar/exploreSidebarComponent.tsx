@@ -98,19 +98,16 @@ const ExploreSidebarComponent: React.FC<ExploreSidebarComponentProps> = ({
                 name: searchTerm,
             };
 
-        if (minPrice)
-            queryParams = {
-                ...queryParams,
-                minPrice: minPrice,
-            };
+        queryParams = {
+            ...queryParams,
+            minPrice: minPrice,
+        };
 
-        if (maxPrice)
-            queryParams = {
-                ...queryParams,
-                maxPrice: maxPrice,
-            };
-
-        console.table('in');
+        queryParams = {
+            ...queryParams,
+            maxPrice: maxPrice,
+        };
+        
         filterHandler(queryParams);
     };
 
